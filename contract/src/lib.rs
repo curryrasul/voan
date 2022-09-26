@@ -72,4 +72,15 @@ impl Contract {
             nullifiers,
         }
     }
+
+    pub fn vote(proof: String, pub_inputs: String) {
+        // To check that status is active
+        // To check that this is before the deadline
+
+        // To check the correctness of zkproof:
+        //     root in pub_inputs == root in the contract
+
+        // To check that the nullifier from pub_inputs is not in the set
+        todo!()
+    }
 }
