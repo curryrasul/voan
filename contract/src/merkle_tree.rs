@@ -72,25 +72,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn temper() {
-        let hex1 = str_to_fr("10").to_string();
-        let hex1 = &hex1[3..(hex1.len() - 1)].to_string();
-        let fr1 = hex_to_fr(hex1);
-
-        let hex2 = str_to_fr("20").to_string();
-        let hex2 = &hex2[3..(hex2.len() - 1)].to_string();
-        let fr2 = hex_to_fr(hex2);
-
-        let hasher = MimcSponge::default();
-        let key = str_to_fr("0");
-
-        let res1 = hasher.multi_hash(&[fr1, fr2], key, 1)[0];
-
-        let fr1 = str_to_fr("10");
-        let fr2 = str_to_fr("20");
-
-        let res2 = hasher.multi_hash(&[fr1, fr2], key, 1)[0];
-
-        assert_eq!(res1, res2);
+    fn merkle_tree_test() {
+        todo!()
     }
 }
