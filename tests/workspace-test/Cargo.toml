@@ -1,0 +1,10 @@
+[package]
+name = "workspace-test"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+near-units = "0.2.0"
+workspaces = "0.4.0"
+tokio = { version = "1.18.1", features = ["full"] }
+anyhow = "1.0"
