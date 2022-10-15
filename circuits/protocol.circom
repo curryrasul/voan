@@ -1,8 +1,8 @@
 pragma circom 2.0.0;
 
-include "../node_modules/circomlib/circuits/switcher.circom";
-include "../node_modules/circomlib/circuits/poseidon.circom";
 include "../node_modules/circomlib/circuits/bitify.circom";
+include "../node_modules/circomlib/circuits/switcher.circom";
+include "../node_modules/circomlib/circuits/mimcsponge.circom";
 
 template Mkt2VerifierLevel() {
     signal input sibling;
@@ -11,18 +11,20 @@ template Mkt2VerifierLevel() {
     signal output root;
 
     component sw = Switcher();
-    component hash = Poseidon(2);   
+    component hash = MiMCSponge(2, 220, 1);   
 
     sw.sel <== selector;
     sw.L <== low;
     sw.R <== sibling;
 
-    hash.inputs[0] <== sw.outL;
-    hash.inputs[1] <== sw.outR;
+    hash.ins[0] <== sw.outL;
+    hash.ins[1] <== sw.outR;
+    hash.k <== 0;
 
-    root <== hash.out;
+    root <== hash.outs[0];
 }
 
+// There are 2^nLevels leaves in the Mkt
 template Mkt2Verifier(nLevels) {
     // Private inputs
     signal input key;
@@ -39,10 +41,11 @@ template Mkt2Verifier(nLevels) {
     component n2b = Num2Bits(nLevels);
     component levels[nLevels];
 
-    component hashV = Poseidon(2);
+    component hashV = MiMCSponge(2, 220, 1);
     
-    hashV.inputs[0] <== secret;
-    hashV.inputs[1] <== nullifier;
+    hashV.ins[0] <== secret;
+    hashV.ins[1] <== nullifier;
+    hashV.k <== 0;
 
     n2b.in <== key;
 
@@ -51,7 +54,7 @@ template Mkt2Verifier(nLevels) {
         levels[i].sibling <== siblings[i];
         levels[i].selector <== n2b.out[i];
         if (i == nLevels - 1) {
-            levels[i].low <== hashV.out;
+            levels[i].low <== hashV.outs[0];
         } else {
             levels[i].low <== levels[i + 1].root;
         }
