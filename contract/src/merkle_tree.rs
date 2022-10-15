@@ -66,13 +66,3 @@ impl MerkleTree {
         self.leaves.to_vec()
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn merkle_tree_test() {
-        todo!()
-    }
-}
