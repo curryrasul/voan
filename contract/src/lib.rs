@@ -1,4 +1,5 @@
 use electron_rs::verifier::near::*;
+use mimc_sponge_rs::MimcSponge;
 
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::{Deserialize, Serialize};

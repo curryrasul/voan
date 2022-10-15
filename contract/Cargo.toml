@@ -9,6 +9,7 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 near-sdk = "4.0.0"
 electron-rs = { git = "https://github.com/Electron-Labs/electron-rs" }
+mimc-sponge-rs = { git = "https://github.com/tzilkha/mimc-sponge-rs" }
 
 [profile.release]
 codegen-units = 1
