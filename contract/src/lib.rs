@@ -1,111 +1,54 @@
-// use electron_rs::verifier::near::*;
-use mimc_sponge_rs::{str_to_fr, MimcSponge};
+use std::collections::HashSet;
 
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-// use near_sdk::serde::{Deserialize, Serialize};
-
-// use near_sdk::collections::UnorderedSet;
-
-use near_sdk::near_bindgen;
 use near_sdk::PanicOnDefault;
+use near_sdk::{env, near_bindgen, AccountId};
 
-// mod merkle_tree;
+mod merkle_tree;
+use merkle_tree::MerkleTree;
 
-// #[derive(BorshSerialize, BorshDeserialize, Serialize, Deserialize)]
-// #[serde(crate = "near_sdk::serde")]
-// pub struct Proposal {
-//     message: String,
-// }
-
-// #[derive(BorshSerialize, BorshDeserialize)]
-// pub enum VotingStatus {
-//     Active,
-//     Inactive,
-// }
+mod utils;
+use utils::*;
 
 #[near_bindgen]
 #[derive(BorshSerialize, BorshDeserialize, PanicOnDefault)]
 pub struct Contract {
-    // vkey: PreparedVerifyingKey,
-    // merkle_root: String,
-
-    // proposal: Proposal,
-
-    // deadline: u64,
-    // status: VotingStatus,
-    // number_of_voters: u32,
-
-    // votes_pos: u32,
-
-    // nullifiers: UnorderedSet<String>,
-    x: i32,
+    merkle_tree: MerkleTree,
+    voters_whitelist: HashSet<AccountId>,
 }
 
 #[near_bindgen]
 impl Contract {
-    // #[init]
-    // pub fn new(
-    //     vkey: String,
-    //     merkle_root: String,
-    //     proposal: Proposal,
-    //     deadline: u64,
-    //     number_of_voters: u32,
-    // ) -> Self {
-    //     assert!(
-    //         !near_sdk::env::state_exists(),
-    //         "The contract has already been initialized"
-    //     );
-
-    //     // Verification key parsing
-    //     let vkey = parse_verification_key(vkey).expect("Cannot deserialize verification key");
-    //     let vkey = get_prepared_verifying_key(vkey);
-
-    //     let status = VotingStatus::Active;
-    //     let votes_pos = 0;
-
-    //     let nullifiers = UnorderedSet::new(b"a");
-
-    //     Self {
-    //         vkey,
-    //         merkle_root,
-    //         proposal,
-    //         deadline,
-    //         status,
-    //         number_of_voters,
-    //         votes_pos,
-    //         nullifiers,
-    //     }
-    // }
-
-    // pub fn vote(proof: String, pub_inputs: String) {
-    //     // To check that status is active
-    //     // To check that this is before the deadline
-
-    //     // To check the correctness of zkproof:
-    //     //     root in pub_inputs == root in the contract
-
-    //     // To check that the nullifier from pub_inputs is not in the set
-    //     todo!()
-    // }
-
+    /// Smart-contract constructor
     #[init]
-    pub fn new() -> Self {
-        Self { x: 0 }
+    pub fn new(voters_whitelist: HashSet<AccountId>) -> Self {
+        // Check if the contract is not already initialized
+        assert!(
+            !near_sdk::env::state_exists(),
+            "The contract has already been initialized"
+        );
+
+        // Construct the construct
+        Self {
+            merkle_tree: MerkleTree::new(depth(voters_whitelist.len())),
+            voters_whitelist,
+        }
     }
 
-    pub fn hash(&mut self, preimage: String) -> Vec<String> {
-        // for nothing
-        self.x += 1;
+    /// Function that insert the commitment into the Merkle Tree
+    pub fn sign_up(&mut self, commitment: String) {
+        // Check if signer is in the whitelist
+        // Remove him, so he cannot sign_up more
+        let signer = env::signer_account_id();
+        assert!(self.voters_whitelist.contains(&signer));
+        self.voters_whitelist.remove(&signer);
 
-        let mut res = vec![];
+        // Insert the commitment into the Merkle Tree
+        self.merkle_tree.insert(&commitment);
+    }
 
-        let hasher = MimcSponge::default();
-        let key = str_to_fr("0");
-
-        for _ in 0..10 {
-            res.push(hasher.multi_hash(&[str_to_fr(&preimage)], key, 1)[0].to_string());
-        }
-
-        res
+    /// View function that returns Merkle Tree
+    pub fn merkle_tree(&self) -> Vec<String> {
+        self.merkle_tree.leaves()
     }
 }
