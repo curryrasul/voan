@@ -1,6 +1,10 @@
+use mimc_sponge_rs::{str_to_fr, Fr, MimcSponge};
 use near_units::parse_near;
 use near_workspaces::{Account, AccountId};
 use serde_json::json;
+
+mod utils;
+use utils::*;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -49,13 +53,17 @@ async fn main() -> anyhow::Result<()> {
     // ---------------------------------------------------------------
     // Sign Up Test
 
-    let (status, gas_burnt) = sign_up(&alice, contract.id(), "12345").await;
+    let alice_commitment = "1234567";
+    let bob_commitment = "7654321";
+    let jordan_commitment = "9999999";
+
+    let (status, gas_burnt) = sign_up(&alice, contract.id(), alice_commitment).await;
     println!(
         "Alice Sign Up Transaction \nSuccess: {}\nGasBurnt: {}\n",
         status, gas_burnt
     );
 
-    let (status, gas_burnt) = sign_up(&bob, contract.id(), "12345").await;
+    let (status, gas_burnt) = sign_up(&bob, contract.id(), bob_commitment).await;
     println!(
         "Bob Sign Up Transaction \nSuccess: {}\nGasBurnt: {}\n",
         status, gas_burnt
@@ -67,35 +75,47 @@ async fn main() -> anyhow::Result<()> {
         status, gas_burnt
     );
 
-    let (status, gas_burnt) = sign_up(&jordan, contract.id(), "12345").await;
+    let (status, gas_burnt) = sign_up(&jordan, contract.id(), jordan_commitment).await;
     println!(
         "Jordan Sign Up Transaction \nSuccess: {}\nGasBurnt: {}\n",
         status, gas_burnt
     );
 
     // ---------------------------------------------------------------
+    // Merkle Tree Test
 
-    Ok(())
-}
-
-async fn create_sub(account: &Account, name: &str) -> Account {
-    account
-        .create_subaccount(name)
-        .initial_balance(parse_near!("10 N"))
-        .transact()
-        .await
-        .unwrap()
-        .result
-}
-
-async fn sign_up(account: &Account, contract_id: &AccountId, commitment: &str) -> (bool, u64) {
-    let output = account
-        .call(contract_id, "sign_up")
-        .args_json(json!({ "commitment": commitment }))
-        .max_gas()
-        .transact()
-        .await
+    // Final Merkle Tree
+    let out = contract
+        .call("merkle_tree")
+        .view()
+        .await?
+        .json::<Vec<String>>()
         .unwrap();
 
-    (output.is_success(), output.total_gas_burnt)
+    let hasher = MimcSponge::default();
+    let key = str_to_fr("0");
+
+    let alice_commitment = str_to_fr("1234567");
+    let bob_commitment = str_to_fr("7654321");
+    let jordan_commitment = str_to_fr("9999999");
+
+    // First two leaves
+    let first_first = [alice_commitment, bob_commitment];
+    // Second two leaves
+    let second_second = [jordan_commitment, Fr::default()];
+    // Hash of first two leaves
+    let first = hasher.multi_hash(&first_first, key, 1)[0];
+    // Hash of second two leaves
+    let second = hasher.multi_hash(&second_second, key, 1)[0];
+    // Root of Merkle Tree
+    let root = hasher.multi_hash(&[first, second], key, 1)[0];
+
+    assert_eq!(fr_to_hex(&alice_commitment), out[3]);
+    assert_eq!(fr_to_hex(&bob_commitment), out[4]);
+    assert_eq!(fr_to_hex(&jordan_commitment), out[5]);
+    assert_eq!(fr_to_hex(&first), out[1]);
+    assert_eq!(fr_to_hex(&second), out[2]);
+    assert_eq!(fr_to_hex(&root), out[0]);
+
+    Ok(())
 }

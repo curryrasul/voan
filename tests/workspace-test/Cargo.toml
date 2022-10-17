@@ -9,3 +9,5 @@ near-workspaces = "0.6.0"
 serde_json = "1.0.86"
 anyhow = "1.0"
 tokio = { version = "1.18.1", features = ["full"] }
+uint = { version = "0.9.4", default-features = false }
+mimc-sponge-rs = { git = "https://github.com/tzilkha/mimc-sponge-rs" }
