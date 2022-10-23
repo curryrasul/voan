@@ -25,6 +25,15 @@ impl MerkleTree {
 
         let key = total_len - (1 << depth);
 
+        // Calculate Merkle Tree
+        let hasher = MimcSponge::default();
+        let mimc_key = Fr::default();
+        for i in (0..key).rev() {
+            let first = hex_to_fr(&leaves[2 * i + 1]);
+            let second = hex_to_fr(&leaves[2 * i + 2]);
+            leaves[i] = fr_to_hex(&hasher.multi_hash(&[first, second], mimc_key, 1)[0]);
+        }
+
         Self { leaves, key }
     }
 
