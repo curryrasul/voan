@@ -4,6 +4,8 @@ use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::PanicOnDefault;
 use near_sdk::{env, near_bindgen, AccountId};
 
+use electron_rs::verifier::near::*;
+
 mod merkle_tree;
 use merkle_tree::MerkleTree;
 
@@ -26,8 +28,8 @@ pub struct Contract {
     voting_deadline: u64,
     // Nullifiers HashSet to prevent the double-vote
     nullifiers: HashSet<String>,
-    // Positive votes
-    positive_votes: u32,
+    // Verifying Groth16 key
+    vkey: PreparedVerifyingKey,
 }
 
 #[near_bindgen]
@@ -35,6 +37,7 @@ impl Contract {
     /// Smart-contract constructor
     #[init]
     pub fn new(
+        vkey: String,
         voters_whitelist: HashSet<AccountId>,
         signup_deadline: u64,
         voting_deadline: u64,
@@ -45,6 +48,10 @@ impl Contract {
             "The contract has already been initialized"
         );
 
+        // Verification key parsing
+        let vkey = parse_verification_key(vkey).expect("Cannot deserialize verification key");
+        let vkey = get_prepared_verifying_key(vkey);
+
         // Construct the contract
         Self {
             merkle_tree: MerkleTree::new(depth(voters_whitelist.len())),
@@ -52,7 +59,7 @@ impl Contract {
             signup_deadline,
             voting_deadline,
             nullifiers: HashSet::new(),
-            positive_votes: 0,
+            vkey,
         }
     }
 
@@ -72,6 +79,23 @@ impl Contract {
 
         // Insert the commitment into the Merkle Tree
         self.merkle_tree.insert(&commitment);
+    }
+
+    /// Vote function
+    pub fn vote(&mut self) {
+        // To check that status is active
+        // To check that this is before the deadline
+        // To check the correctness of zkproof:
+        //     root in pub_inputs == root in the contract
+        // To check that the nullifier from pub_inputs is not in the set
+        assert!(
+            env::block_timestamp() > self.signup_deadline || self.voters_whitelist.is_empty(),
+            "Registration is not completed yet"
+        );
+        assert!(
+            env::block_timestamp() < self.voting_deadline,
+            "Voting is finished"
+        );
     }
 
     /// View function that returns Merkle Tree
