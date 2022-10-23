@@ -82,7 +82,7 @@ impl Contract {
     }
 
     /// Vote function
-    pub fn vote(&mut self) {
+    pub fn vote(&mut self, proof: String, pub_inputs: String) -> bool {
         // To check that status is active
         // To check that this is before the deadline
         // To check the correctness of zkproof:
@@ -96,6 +96,8 @@ impl Contract {
             env::block_timestamp() < self.voting_deadline,
             "Voting is finished"
         );
+
+        verify_proof(self.vkey.clone(), proof, pub_inputs).expect("Cannot verify the proof")
     }
 
     /// View function that returns Merkle Tree

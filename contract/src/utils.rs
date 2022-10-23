@@ -4,7 +4,7 @@ use mimc_sponge_rs::{str_to_fr, Fr};
 use uint::construct_uint;
 
 construct_uint! {
-    pub struct U256(4);
+    pub(crate) struct U256(4);
 }
 
 /// Helper function that tells what's the depth of the
@@ -29,6 +29,12 @@ pub(crate) fn hex_to_fr(hex: &str) -> Fr {
 pub(crate) fn fr_to_hex(hex: &Fr) -> String {
     let hex = hex.to_string();
     hex[3..(hex.len() - 1)].to_string()
+}
+
+pub(crate) struct PublicInputs {
+    pub(crate) nullifier: String,
+    pub(crate) root: String,
+    pub(crate) candidateId: String,
 }
 
 #[cfg(test)]
