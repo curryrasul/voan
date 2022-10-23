@@ -36,7 +36,8 @@ template Mkt2Verifier(nLevels) {
     signal input root;
 
     // Public input to constraint relayer & argument to vote function
-    signal input candidateId;
+    // 1 | 0
+    signal input vote;
 
     component n2b = Num2Bits(nLevels);
     component levels[nLevels];

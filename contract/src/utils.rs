@@ -31,11 +31,11 @@ pub(crate) fn fr_to_hex(hex: &Fr) -> String {
     hex[3..(hex.len() - 1)].to_string()
 }
 
-pub(crate) struct PublicInputs {
-    pub(crate) nullifier: String,
-    pub(crate) root: String,
-    pub(crate) candidateId: String,
-}
+// pub(crate) struct PublicInputs {
+//     pub(crate) nullifier: String,
+//     pub(crate) root: String,
+//     pub(crate) candidateId: String,
+// }
 
 #[cfg(test)]
 mod tests {
