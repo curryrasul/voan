@@ -11,17 +11,6 @@ mod utils;
 use utils::*;
 
 // --------------------------------------------------------------------
-// Useful structs and impls
-
-/// Status of voting
-#[derive(BorshSerialize, BorshDeserialize, PartialEq, Eq, Debug)]
-pub enum Status {
-    SignUp,
-    Voting,
-    Inactive,
-}
-
-// --------------------------------------------------------------------
 // Smart-contract
 
 #[near_bindgen]
@@ -31,12 +20,14 @@ pub struct Contract {
     merkle_tree: MerkleTree,
     // Whitelist of voters
     voters_whitelist: HashSet<AccountId>,
-    // Status of voting
-    status: Status,
     // Deadline for sign up
     signup_deadline: u64,
     // Deadline for voting
     voting_deadline: u64,
+    // Nullifiers HashSet to prevent the double-vote
+    nullifiers: HashSet<String>,
+    // Positive votes
+    positive_votes: u32,
 }
 
 #[near_bindgen]
@@ -58,16 +49,20 @@ impl Contract {
         Self {
             merkle_tree: MerkleTree::new(depth(voters_whitelist.len())),
             voters_whitelist,
-            status: Status::SignUp,
             signup_deadline,
             voting_deadline,
+            nullifiers: HashSet::new(),
+            positive_votes: 0,
         }
     }
 
     /// Function that insert the commitment into the Merkle Tree
     pub fn sign_up(&mut self, commitment: String) {
-        // Check if status is SignUp
-        assert_eq!(self.status, Status::SignUp, "Sign Up is finished");
+        // Check if it's before the deadline
+        assert!(
+            env::block_timestamp() < self.signup_deadline,
+            "Registration is completed"
+        );
 
         // Check if signer is in the whitelist
         // Remove him, so he cannot sign_up more
@@ -77,33 +72,6 @@ impl Contract {
 
         // Insert the commitment into the Merkle Tree
         self.merkle_tree.insert(&commitment);
-
-        // If everyone signed up change the status to Voting
-        if self.voters_whitelist.is_empty() {
-            self.status = Status::Voting;
-        }
-    }
-
-    /// Helper function to change status to Voting
-    pub fn start_voting(&mut self) {
-        assert_eq!(self.status, Status::SignUp, "Cannot change the status");
-        assert!(
-            env::block_timestamp() > self.signup_deadline,
-            "Not a deadline yet"
-        );
-
-        self.status = Status::Voting;
-    }
-
-    /// Helper function to change status to Inactive
-    pub fn finish_voting(&mut self) {
-        assert_eq!(self.status, Status::Voting, "Cannot change the status");
-        assert!(
-            env::block_timestamp() > self.voting_deadline,
-            "Not a deadline yet"
-        );
-
-        self.status = Status::Inactive;
     }
 
     /// View function that returns Merkle Tree
