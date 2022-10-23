@@ -117,5 +117,7 @@ async fn main() -> anyhow::Result<()> {
     assert_eq!(fr_to_hex(&second), out[2]);
     assert_eq!(fr_to_hex(&root), out[0]);
 
+    println!("Merkle Tree test is fine\n");
+
     Ok(())
 }
