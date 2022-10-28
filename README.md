@@ -14,20 +14,35 @@ One of the key requirements for votings is **privacy**. Main motivation comes fr
 
 <h2 align="center">How it works</h2>
 
+### Abstract
+The verifier checks zkSNARK proof. If member is in the merkle tree he can make it right and everything will be fine.
+
+### Tech stack
+Programming languages: 
+* Rust - Smart-contract, tests
+* JS | React - WebUI
+* NodeJS - Relayer
+* Circom - zkSNARK circuits
+
+Primitives:
+* Groth16 - used for a zkp-side (arkworks-rs/groth16 + electron-labs/verifier & SnarkJS + Circom)
+* Merkle Tree + MiMCSponge (fully implemented by our team)
+
+### Tech explanation
 The protocol consists of three parts:
 * Smart-contract
-* Client-side app (Web-UI)
+* Client-side app
 * Relayer
 
 ### Smart-contract
-Smart-contract in Rust.
+Smart-contract is implemented with Rust. 
 
 ### Client app
-Client app in JS.
+Client app is implemented with JS.
 
 ### Relayer
 
-Relayer in NodeJS.
+Relayer is implemented with NodeJS.
 
 ---
 
