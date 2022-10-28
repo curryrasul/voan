@@ -41,9 +41,14 @@ async fn main() -> anyhow::Result<()> {
     let contract = worker.dev_deploy(&wasm).await?;
     let deploy_status = contract
         .call("new")
-        .args_json(json!({ "voters_whitelist": voters_whitelist }))
+        .max_gas()
+        .args_json(json!({ "voters_whitelist": voters_whitelist,
+            "signup_deadline": u64::MAX,
+            "voting_deadline" : u64::MAX
+        }))
         .transact()
         .await?;
+
     println!(
         "Deploy Transaction \nSuccess: {}\nGasBurnt: {}\n",
         deploy_status.is_success(),

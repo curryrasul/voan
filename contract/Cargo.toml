@@ -2,6 +2,7 @@
 name = "contract"
 version = "0.1.0"
 edition = "2021"
+authors = ["Magamedrasul Ibragimov"]
 
 [lib]
 crate-type = ["cdylib", "rlib"]

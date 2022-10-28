@@ -38,7 +38,7 @@ impl MerkleTree {
     }
 
     /// Function that inserts the leaf into the Merkle Tree
-    pub fn insert(&mut self, leaf: &str) {
+    pub(crate) fn insert(&mut self, leaf: &str) {
         let mut cur_pos = self.key;
         self.key += 1;
 
@@ -68,7 +68,11 @@ impl MerkleTree {
     }
 
     /// Function that returns the leaves of the Merkle Tree
-    pub fn leaves(&self) -> Vec<String> {
+    pub(crate) fn leaves(&self) -> Vec<String> {
         self.leaves.clone()
+    }
+
+    pub(crate) fn root(&self) -> String {
+        self.leaves[0].clone()
     }
 }

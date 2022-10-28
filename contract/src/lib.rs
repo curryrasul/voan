@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 
+use mimc_sponge_rs::str_to_fr;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::PanicOnDefault;
 use near_sdk::{env, near_bindgen, AccountId};
@@ -30,6 +31,8 @@ pub struct Contract {
     nullifiers: HashSet<String>,
     // Verifying Groth16 key
     vkey: PreparedVerifyingKey,
+    // Positive votes
+    votes_pos: u8,
 }
 
 #[near_bindgen]
@@ -54,12 +57,13 @@ impl Contract {
 
         // Construct the contract
         Self {
-            merkle_tree: MerkleTree::new(depth(voters_whitelist.len())),
+            merkle_tree: MerkleTree::new(3),
             voters_whitelist,
             signup_deadline,
             voting_deadline,
             nullifiers: HashSet::new(),
             vkey,
+            votes_pos: 0,
         }
     }
 
@@ -82,12 +86,8 @@ impl Contract {
     }
 
     /// Vote function
-    pub fn vote(&mut self, proof: String, pub_inputs: String) -> bool {
-        // To check that status is active
-        // To check that this is before the deadline
-        // To check the correctness of zkproof:
-        //     root in pub_inputs == root in the contract
-        // To check that the nullifier from pub_inputs is not in the set
+    pub fn vote(&mut self, proof: String, pub_inputs: String) {
+        // Deadline checks
         assert!(
             env::block_timestamp() > self.signup_deadline || self.voters_whitelist.is_empty(),
             "Registration is not completed yet"
@@ -97,7 +97,30 @@ impl Contract {
             "Voting is finished"
         );
 
-        verify_proof(self.vkey.clone(), proof, pub_inputs).expect("Cannot verify the proof")
+        let tmp: [String; 3] = serde_json::from_str(&pub_inputs).unwrap();
+
+        // Nullifier check
+        assert!(!self.nullifiers.contains(&tmp[0]), "Already voted");
+        self.nullifiers.insert(tmp[0].clone());
+
+        // Merkle Tree Root check
+        assert_eq!(
+            hex_to_fr(&self.merkle_tree.root()),
+            str_to_fr(&tmp[1]),
+            "Wrong public input: Root of the Merkle Tree"
+        );
+
+        // SNARK Proof check
+        assert!(
+            verify_proof(self.vkey.clone(), proof, pub_inputs).expect("Cannot verify the proof"),
+            "Wrong proof"
+        );
+
+        // Vote
+        let vote: u8 = tmp[2].parse().unwrap();
+        if vote == 1 {
+            self.votes_pos += 1;
+        }
     }
 
     /// View function that returns Merkle Tree
