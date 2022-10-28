@@ -2,7 +2,7 @@
 <p align="center">
     <img src="./images/voan-logo.jpeg" width="150">
 </p>
-<h3 align="center">ANonymous VOting on NEAR Protocol</h3>
+<h4 align="center">ANonymous VOting on NEAR Protocol</h4>
 
 ___
 
@@ -19,15 +19,13 @@ The protocol consists of three parts:
 * Client-side app (Web-UI)
 * Relayer
 
-<h3 align="center">Smart-contract</h3>
-
+### Smart-contract
 Smart-contract in Rust.
 
-<h3 align="center">Client app</h3>
-
+### Client app
 Client app in JS.
 
-<h3 align="center">Relayer</h3>
+### Relayer
 
 Relayer in NodeJS.
 
