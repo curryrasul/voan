@@ -34,13 +34,15 @@ The protocol consists of three parts:
 * Client-side app
 * Relayer
 
-### Smart-contract
+**Smart-contract**
+
 Smart-contract is implemented with Rust. 
 
-### Client app
+**Client app**
+
 Client app is implemented with JS.
 
-### Relayer
+**Relayer**
 
 Relayer is implemented with NodeJS.
 
