@@ -127,9 +127,9 @@ impl Contract {
         if vote == 1 {
             self.votes_pos += 1;
             log!("Votes_pos incremented! Votes_pos = {}", self.votes_pos);
+        } else {
+            log!("Voted against! Votes_pos not incremented");
         }
-
-        log!("Voted against! Votes_pos not incremented");
     }
 
     /// View function that returns Merkle Tree
