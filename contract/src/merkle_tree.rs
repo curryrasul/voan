@@ -77,7 +77,22 @@ impl MerkleTree {
         self.leaves[0].clone()
     }
 
-    pub(crate) fn get_merkle_proof(&self, key: usize) -> Vec<String> {
-        todo!()
+    /// Return siblings for the specified key
+    pub(crate) fn get_siblings(&self, key: usize) -> Vec<String> {
+        let mut key = key + 7;
+        assert!(key < 15, "No such key in Merkle Tree");
+
+        let mut siblings = vec![];
+
+        while key != 0 {
+            if key % 2 == 0 {
+                siblings.push(self.leaves[key + 1].clone());
+            } else {
+                siblings.push(self.leaves[key - 1].clone());
+            }
+            key = (key - 1) / 2;
+        }
+
+        siblings
     }
 }

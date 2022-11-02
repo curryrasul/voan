@@ -147,8 +147,8 @@ impl Contract {
         self.merkle_tree.root()
     }
 
-    /// View function that returns Merkle Proof for the specified index
-    pub fn merkle_proof(&self, key: usize) -> Vec<String> {
-        self.merkle_tree.get_merkle_proof(key)
+    /// View function that returns siblings for the specified key
+    pub fn siblings(&self, key: usize) -> Vec<String> {
+        self.merkle_tree.get_siblings(key)
     }
 }
