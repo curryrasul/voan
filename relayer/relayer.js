@@ -12,22 +12,23 @@ const serverConfig = {
 
 
 const nearConfig = {
-    ACCOUNT_ID: process.argv[2], // second command line argument is accountId
-    KEY_PATH: process.argv[3],
+    networkId: "testnet",
+    accountId: process.argv[2], // second command line argument is accountId
+    keyPath: process.argv[3],
 };
 
 
 const getKeyStore = function () {
-    const credentials = JSON.parse(fs.readFileSync(homedir + nearConfig.KEY_PATH));
+    const credentials = JSON.parse(fs.readFileSync(homedir + nearConfig.keyPath));
     const myKeyStore = new keyStores.InMemoryKeyStore();
-    myKeyStore.setKey(nearConnectionConfig.networkId, nearConfig.ACCOUNT_ID, KeyPair.fromString(credentials.private_key));
+    myKeyStore.setKey(nearConfig.networkId, nearConfig.accountId, KeyPair.fromString(credentials.private_key));
     return myKeyStore;
 };
 
 
 const getNearConnection = async function () {
     const nearConnectionConfig = {
-        networkId: "testnet",
+        networkId: nearConfig.networkId,
         keyStore: getKeyStore(), // first create a key store 
         nodeUrl: "https://rpc.testnet.near.org",
         walletUrl: "https://wallet.testnet.near.org",
