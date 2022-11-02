@@ -97,7 +97,8 @@ impl Contract {
             "Voting is finished"
         );
 
-        let tmp: [String; 3] = serde_json::from_str(&pub_inputs).unwrap();
+        let tmp: [String; 3] =
+            serde_json::from_str(&pub_inputs).expect("Cannot deserialize pub_inputs");
 
         // Nullifier check
         assert!(!self.nullifiers.contains(&tmp[0]), "Already voted");
@@ -117,7 +118,7 @@ impl Contract {
         );
 
         // Vote
-        let vote: u8 = tmp[2].parse().unwrap();
+        let vote: u8 = tmp[2].parse().expect("Cannot parse vote!");
         if vote == 1 {
             self.votes_pos += 1;
         }
