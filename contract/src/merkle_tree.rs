@@ -72,7 +72,12 @@ impl MerkleTree {
         self.leaves.clone()
     }
 
+    /// Return root of merkle tree
     pub(crate) fn root(&self) -> String {
         self.leaves[0].clone()
+    }
+
+    pub(crate) fn get_merkle_proof(&self, key: usize) -> Vec<String> {
+        todo!()
     }
 }
