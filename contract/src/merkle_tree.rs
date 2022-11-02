@@ -86,9 +86,9 @@ impl MerkleTree {
 
         while key != 0 {
             if key % 2 == 0 {
-                siblings.push(self.leaves[key + 1].clone());
-            } else {
                 siblings.push(self.leaves[key - 1].clone());
+            } else {
+                siblings.push(self.leaves[key + 1].clone());
             }
             key = (key - 1) / 2;
         }
