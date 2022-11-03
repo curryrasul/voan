@@ -16,6 +16,7 @@ const nearConfig = {
     networkId: "testnet",
     accountId: process.argv[2], // second command line argument is accountId
     keyPath: process.argv[3], // third command line argument is keyPath
+    vKeyPath: ""
 };
 
 
@@ -56,8 +57,11 @@ const getContract = async function () {
 };
 
 
-const verify = async function () {
-
+const verifyProof = async function (publicSignals, proof) {
+    // TO DO check vKeyPath 
+    const vKey = JSON.parse(fs.readFileSync(homedir + nearConfig.vKeyPath));
+    const res = await snarkjs.groth16.verify(vKey, publicSignals, proof);
+    return res;
 };
 
 
