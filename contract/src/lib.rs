@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use mimc_sponge_rs::str_to_fr;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::PanicOnDefault;
-use near_sdk::{env, near_bindgen, AccountId};
+use near_sdk::{env, log, near_bindgen, AccountId};
 
 use electron_rs::verifier::near::*;
 
@@ -78,11 +78,16 @@ impl Contract {
         // Check if signer is in the whitelist
         // Remove him, so he cannot sign_up more
         let signer = env::signer_account_id();
-        assert!(self.voters_whitelist.contains(&signer));
+        assert!(
+            self.voters_whitelist.contains(&signer),
+            "Signer not in the whitelist"
+        );
         self.voters_whitelist.remove(&signer);
 
         // Insert the commitment into the Merkle Tree
         self.merkle_tree.insert(&commitment);
+
+        log!("Signer: {} inserts commitment: {}", signer, commitment);
     }
 
     /// Vote function
@@ -121,11 +126,29 @@ impl Contract {
         let vote: u8 = tmp[2].parse().expect("Cannot parse vote!");
         if vote == 1 {
             self.votes_pos += 1;
+            log!("Votes_pos incremented! Votes_pos = {}", self.votes_pos);
+        } else {
+            log!("Voted against! Votes_pos not incremented");
         }
     }
 
     /// View function that returns Merkle Tree
     pub fn merkle_tree(&self) -> Vec<String> {
         self.merkle_tree.leaves()
+    }
+
+    /// View function that returns self.votes_pos
+    pub fn how_many_pos(&self) -> u8 {
+        self.votes_pos
+    }
+
+    /// View function that returns root of the Merkle Tree
+    pub fn root(&self) -> String {
+        self.merkle_tree.root()
+    }
+
+    /// View function that returns siblings for the specified key
+    pub fn siblings(&self, key: usize) -> Vec<String> {
+        self.merkle_tree.get_siblings(key)
     }
 }
