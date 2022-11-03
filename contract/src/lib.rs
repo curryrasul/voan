@@ -149,6 +149,16 @@ impl Contract {
 
     /// View function that returns siblings for the specified key
     pub fn siblings(&self, key: usize) -> Vec<String> {
-        self.merkle_tree.get_siblings(key)
+        self.merkle_tree
+            .get_siblings(key)
+            .iter()
+            .map(|s| s.parse::<U256>().unwrap().to_string())
+            .rev()
+            .collect()
+    }
+
+    /// View function that returns current nullifiers
+    pub fn nullifiers(&self) -> HashSet<String> {
+        self.nullifiers.clone()
     }
 }
