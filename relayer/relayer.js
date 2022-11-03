@@ -16,7 +16,7 @@ const nearConfig = {
     networkId: "testnet",
     accountId: process.argv[2], // second command line argument is accountId
     keyPath: process.argv[3], // third command line argument is keyPath
-    vKeyPath: ""
+    vKeyPath: "" // path to "verification_key.json"
 };
 
 
@@ -45,23 +45,46 @@ const getNearConnection = async function () {
 
 
 const getContract = async function () {
+    const nearConnection = await getNearConnection();
     const account = await nearConnection.account(nearConfig.accountId);
     const contract = new nearAPI.Contract(
             account, // the account object that is connecting
-            nearConfig.accountId,
+            "dev-1667478981285-12043110953224",
             {
-                viewMethods: [], // view methods do not change state but usually return a value
+                viewMethods: ["root", "how_many_pos"], // view methods do not change state but usually return a value
                 changeMethods: [], // change methods modify state
             });
+
     return contract;
 };
 
 
-const verifyProof = async function (publicSignals, proof) {
+const proofVerify = async function (publicSignals, proof) {
     // TO DO check vKeyPath 
     const vKey = JSON.parse(fs.readFileSync(homedir + nearConfig.vKeyPath));
     const res = await snarkjs.groth16.verify(vKey, publicSignals, proof);
     return res;
+};
+
+
+const nullifierVerify = async function (nullifier) {
+    const contract = await getContract();
+
+    // get nullifier array from s-c
+    // const response = await contract.get_nullifier{};
+
+};  
+
+
+const rootVerify = async function (root) {
+
+    const contract = await getContract();
+
+    console.log(contract)
+
+    // get root from s-c
+    const response = await contract.how_many_pos();
+    console.log("root: " + response);   
 };
 
 
@@ -72,8 +95,10 @@ const requestListener = function (req, res) {
             body += data;
             // JSON obj 
             const obj = JSON.parse(body);
-            
+            const root = obj.root;
 
+            rootVerify(root);
+            
             // Too much POST data, kill the connection!
             if (body.length > 1e6)
                 req.connection.destroy();
@@ -83,10 +108,12 @@ const requestListener = function (req, res) {
 
 
 const main = async () => {
-    const server = http.createServer(requestListener);
-    server.listen(serverConfig.port, serverConfig.hostname, () => {
-        console.log(`Relayer is running on http://${serverConfig.hostname}:${serverConfig.port}`);
-    });
+    rootVerify("root");
+
+    // const server = http.createServer(requestListener);
+    // server.listen(serverConfig.port, serverConfig.hostname, () => {
+    //     console.log(`Relayer is running on http://${serverConfig.hostname}:${serverConfig.port}`);
+    // });
 };
 
 main()
