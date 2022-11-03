@@ -3,6 +3,7 @@ const http = require('node:http');
 const qs = require('querystring');
 const fs = require("fs");
 const homedir = require("os").homedir();
+const snarkjs = require("snarkjs");
 
 
 const serverConfig = {
@@ -14,14 +15,14 @@ const serverConfig = {
 const nearConfig = {
     networkId: "testnet",
     accountId: process.argv[2], // second command line argument is accountId
-    keyPath: process.argv[3],
+    keyPath: process.argv[3], // third command line argument is keyPath
 };
 
 
 const getKeyStore = function () {
     const credentials = JSON.parse(fs.readFileSync(homedir + nearConfig.keyPath));
-    const myKeyStore = new keyStores.InMemoryKeyStore();
-    myKeyStore.setKey(nearConfig.networkId, nearConfig.accountId, KeyPair.fromString(credentials.private_key));
+    const myKeyStore = new nearAPI.keyStores.InMemoryKeyStore();
+    myKeyStore.setKey(nearConfig.networkId, nearConfig.accountId, nearAPI.KeyPair.fromString(credentials.private_key));
     return myKeyStore;
 };
 
@@ -29,7 +30,7 @@ const getKeyStore = function () {
 const getNearConnection = async function () {
     const nearConnectionConfig = {
         networkId: nearConfig.networkId,
-        keyStore: getKeyStore(), // first create a key store 
+        keyStore: getKeyStore(), 
         nodeUrl: "https://rpc.testnet.near.org",
         walletUrl: "https://wallet.testnet.near.org",
         helperUrl: "https://helper.testnet.near.org",
@@ -42,40 +43,47 @@ const getNearConnection = async function () {
 };
 
 
+const getContract = async function () {
+    const account = await nearConnection.account(nearConfig.accountId);
+    const contract = new nearAPI.Contract(
+            account, // the account object that is connecting
+            nearConfig.accountId,
+            {
+                viewMethods: [], // view methods do not change state but usually return a value
+                changeMethods: [], // change methods modify state
+            });
+    return contract;
+};
+
+
+const verify = async function () {
+
+};
+
+
 const requestListener = function (req, res) {
     if (req.method == 'POST') {
         var body = '';
-
         req.on('data', function (data) {
             body += data;
+            // JSON obj 
+            const obj = JSON.parse(body);
             
-            console.log(body)
 
             // Too much POST data, kill the connection!
-            // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
             if (body.length > 1e6)
                 req.connection.destroy();
-        });
-
-        req.on('end', function () {
-            var post = qs.parse(body);
-            // use post['blah'], etc.
         });
     }
 };
 
 
 const main = async () => {
-
-    const nearConnection = await getNearConnection()
-
-
-
-    // const server = http.createServer(requestListener);
-    // server.listen(serverConfig.port, serverConfig.hostname, () => {
-    //     console.log(`Relayer is running on http://${serverConfig.hostname}:${serverConfig.port}`);
-    // });
-}   
+    const server = http.createServer(requestListener);
+    server.listen(serverConfig.port, serverConfig.hostname, () => {
+        console.log(`Relayer is running on http://${serverConfig.hostname}:${serverConfig.port}`);
+    });
+};
 
 main()
 
