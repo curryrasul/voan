@@ -1,6 +1,5 @@
 const nearAPI = require('near-api-js');
 const http = require('node:http');
-const qs = require('querystring');
 const fs = require("fs");
 const homedir = require("os").homedir();
 const snarkjs = require("snarkjs");
@@ -80,18 +79,18 @@ const vote = async function (publicSignals, proof) {
                     "300000000000000", // attached GAS (optional)
                 );
                 console.log(res);
-                return res
+                return res;
             }else{
                 console.log("Already voted");
-                return "Already voted"
+                return "Already voted";
             }
         }else{
             console.log("Wrong proof"); 
-            return "Wrong proof"
+            return "Wrong proof";
         }
     }else{
         console.log("Wrong public input: Root of the Merkle Tree");
-        return "Wrong public input: Root of the Merkle Tree"
+        return "Wrong public input: Root of the Merkle Tree";
     }
 };
 
@@ -112,10 +111,10 @@ const nullifierVerify = async function (nullifier) {
     const nullifiers = await contract.nullifiers();
     for (const null_pair of Object.entries(nullifiers)) {
         if (null_pair[1] === nullifier){
-            return false
+            return false;
         }
     }
-    return true
+    return true;
 };  
 
 
@@ -141,8 +140,8 @@ const requestListener = function (req, res) {
         req.on('end', async function (data){
             // JSON obj 
             const obj = JSON.parse(body);
-            const publicSignals = obj["public"]
-            const proof = obj["proof"][0]
+            const publicSignals = obj["public"];
+            const proof = obj["proof"][0];
 
             const res_message = await vote(publicSignals, proof);
 
