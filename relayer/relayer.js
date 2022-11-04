@@ -16,7 +16,7 @@ const nearConfig = {
     networkId: "testnet",
     accountId: process.argv[2], // second command line argument is accountId
     keyPath: process.argv[3], // third command line argument is keyPath
-    vKeyPath: "" // path to "verification_key.json"
+    vKeyPath: "/projects/voan/circuits/output/verification_key.json" // path to "verification_key.json"
 };
 
 
@@ -49,20 +49,43 @@ const getContract = async function () {
     const account = await nearConnection.account(nearConfig.accountId);
     const contract = new nearAPI.Contract(
             account, // the account object that is connecting
-            "dev-1667478981285-12043110953224",
+            "dev-1667582138320-42736429485907",
             {
-                viewMethods: ["root", "how_many_pos"], // view methods do not change state but usually return a value
-                changeMethods: [], // change methods modify state
+                viewMethods: ["root", "nullifiers"], // view methods do not change state but usually return a value
+                changeMethods: ["vote"], // change methods modify state
             });
 
     return contract;
 };
 
 
-const proofVerify = async function (publicSignals, proof) {
+const vote = async function (publicSignals, proof) {
+    const contract = await getContract();
+
+    const root = await rootVerify(publicSignals[1])
+    if (await proofVerify(publicSignals, proof)){
+        const res = await contract.vote(
+            {"proof": JSON.stringify(proof), "pub_inputs": JSON.stringify(publicSignals)},
+            "300000000000000", // attached GAS (optional)
+        );
+        console.log(res);
+    }
+};
+
+
+async function proofVerify(publicSignals, proof) {
     // TO DO check vKeyPath 
     const vKey = JSON.parse(fs.readFileSync(homedir + nearConfig.vKeyPath));
     const res = await snarkjs.groth16.verify(vKey, publicSignals, proof);
+
+    console.log(res);
+
+    if (res === true) {
+        console.log("Verification OK");
+    } else {
+        console.log("Invalid proof");
+    }
+
     return res;
 };
 
@@ -71,20 +94,22 @@ const nullifierVerify = async function (nullifier) {
     const contract = await getContract();
 
     // get nullifier array from s-c
-    // const response = await contract.get_nullifier{};
-
+    const response = await contract.nullifiers();
+    console.log("nullifier: " + response);
 };  
 
 
 const rootVerify = async function (root) {
-
     const contract = await getContract();
 
-    console.log(contract)
-
     // get root from s-c
-    const response = await contract.how_many_pos();
-    console.log("root: " + response);   
+    const response = await contract.root();
+    if (root === response){
+        console.log("roots same")
+    }else{
+        console.log("roots not same")
+    }
+    return response
 };
 
 
@@ -95,9 +120,11 @@ const requestListener = function (req, res) {
             body += data;
             // JSON obj 
             const obj = JSON.parse(body);
-            const root = obj.root;
+            var publicSignals = obj["public"]
+            const proof = obj["proof"][0]
 
-            rootVerify(root);
+            vote(publicSignals, proof);
+
             
             // Too much POST data, kill the connection!
             if (body.length > 1e6)
@@ -108,12 +135,10 @@ const requestListener = function (req, res) {
 
 
 const main = async () => {
-    rootVerify("root");
-
-    // const server = http.createServer(requestListener);
-    // server.listen(serverConfig.port, serverConfig.hostname, () => {
-    //     console.log(`Relayer is running on http://${serverConfig.hostname}:${serverConfig.port}`);
-    // });
+    const server = http.createServer(requestListener);
+    server.listen(serverConfig.port, serverConfig.hostname, () => {
+        console.log(`Relayer is running on http://${serverConfig.hostname}:${serverConfig.port}`);
+    });
 };
 
 main()
