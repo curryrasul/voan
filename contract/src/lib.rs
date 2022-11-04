@@ -144,7 +144,7 @@ impl Contract {
 
     /// View function that returns root of the Merkle Tree
     pub fn root(&self) -> String {
-        self.merkle_tree.root()
+        self.merkle_tree.root().parse::<U256>().unwrap().to_string()
     }
 
     /// View function that returns siblings for the specified key
