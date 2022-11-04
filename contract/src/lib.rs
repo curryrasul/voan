@@ -68,7 +68,7 @@ impl Contract {
     }
 
     /// Function that insert the commitment into the Merkle Tree
-    pub fn sign_up(&mut self, commitment: String) {
+    pub fn sign_up(&mut self, commitment: String) -> usize {
         // Check if it's before the deadline
         assert!(
             env::block_timestamp() < self.signup_deadline,
@@ -85,9 +85,16 @@ impl Contract {
         self.voters_whitelist.remove(&signer);
 
         // Insert the commitment into the Merkle Tree
-        self.merkle_tree.insert(&commitment);
+        let pos = self.merkle_tree.insert(&commitment);
 
-        log!("Signer: {} inserts commitment: {}", signer, commitment);
+        log!(
+            "Signer: {} inserts commitment: {} to position {}",
+            signer,
+            commitment,
+            pos
+        );
+
+        pos
     }
 
     /// Vote function
@@ -160,5 +167,15 @@ impl Contract {
     /// View function that returns current nullifiers
     pub fn nullifiers(&self) -> HashSet<String> {
         self.nullifiers.clone()
+    }
+
+    /// View function that returns signup deadline
+    pub fn get_signup_deadline(&self) -> u64 {
+        self.signup_deadline
+    }
+
+    /// View function that returns voting deadline
+    pub fn get_voting_deadline(&self) -> u64 {
+        self.voting_deadline
     }
 }
