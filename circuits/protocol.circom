@@ -53,7 +53,7 @@ template Mkt2Verifier(nLevels) {
     for (var i = nLevels - 1; i >= 0; i--) {
         levels[i] = Mkt2VerifierLevel();
         levels[i].sibling <== siblings[i];
-        levels[i].selector <== n2b.out[i];
+        levels[i].selector <== n2b.out[nLevels - i - 1];
         if (i == nLevels - 1) {
             levels[i].low <== hashV.outs[0];
         } else {
