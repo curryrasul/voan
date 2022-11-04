@@ -49,7 +49,7 @@ const getContract = async function () {
     const account = await nearConnection.account(nearConfig.accountId);
     const contract = new nearAPI.Contract(
             account, // the account object that is connecting
-            "dev-1667582138320-42736429485907",
+            "dev-1667590812807-84629299206142",
             {
                 viewMethods: ["root", "nullifiers"], // view methods do not change state but usually return a value
                 changeMethods: ["vote"], // change methods modify state
@@ -62,29 +62,34 @@ const getContract = async function () {
 const vote = async function (publicSignals, proof) {
     const contract = await getContract();
 
-    const root = await rootVerify(publicSignals[1])
-    if (await proofVerify(publicSignals, proof)){
-        const res = await contract.vote(
-            {"proof": JSON.stringify(proof), "pub_inputs": JSON.stringify(publicSignals)},
-            "300000000000000", // attached GAS (optional)
-        );
-        console.log(res);
+    // Merkle Tree root comparison result
+    if (await rootVerify(publicSignals[1])){
+        // snark proof verification result
+        if (await proofVerify(publicSignals, proof)){
+            // check presence of nullifier
+            if (await nullifierVerify(publicSignals[0])){
+                const res = await contract.vote(
+                    {"proof": JSON.stringify(proof), "pub_inputs": JSON.stringify(publicSignals)},
+                    "300000000000000", // attached GAS (optional)
+                );
+                
+                console.log(res);
+            }else{
+                console.log("Already voted");
+            }
+        }else{
+            console.log("Wrong proof"); 
+        }
+    }else{
+        console.log("Wrong public input: Root of the Merkle Tree");
     }
 };
 
 
-async function proofVerify(publicSignals, proof) {
+const proofVerify = async function (publicSignals, proof) {
     // TO DO check vKeyPath 
     const vKey = JSON.parse(fs.readFileSync(homedir + nearConfig.vKeyPath));
     const res = await snarkjs.groth16.verify(vKey, publicSignals, proof);
-
-    console.log(res);
-
-    if (res === true) {
-        console.log("Verification OK");
-    } else {
-        console.log("Invalid proof");
-    }
 
     return res;
 };
@@ -94,8 +99,13 @@ const nullifierVerify = async function (nullifier) {
     const contract = await getContract();
 
     // get nullifier array from s-c
-    const response = await contract.nullifiers();
-    console.log("nullifier: " + response);
+    const nullifiers = await contract.nullifiers();
+    for (const null_pair of Object.entries(nullifiers)) {
+        if (null_pair[1] === nullifier){
+            return false
+        }
+    }
+    return true
 };  
 
 
@@ -104,12 +114,7 @@ const rootVerify = async function (root) {
 
     // get root from s-c
     const response = await contract.root();
-    if (root === response){
-        console.log("roots same")
-    }else{
-        console.log("roots not same")
-    }
-    return response
+    return (root === response)
 };
 
 
@@ -120,7 +125,7 @@ const requestListener = function (req, res) {
             body += data;
             // JSON obj 
             const obj = JSON.parse(body);
-            var publicSignals = obj["public"]
+            const publicSignals = obj["public"]
             const proof = obj["proof"][0]
 
             vote(publicSignals, proof);
