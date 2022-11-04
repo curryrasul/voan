@@ -15,16 +15,23 @@ const serverConfig = {
 const nearConfig = {
     networkId: "testnet",
     accountId: process.argv[2], // second command line argument is accountId
-    keyPath: process.argv[3], // third command line argument is keyPath
     vKeyPath: "/projects/voan/circuits/output/verification_key.json" // path to "verification_key.json"
 };
 
 
-const getKeyStore = function () {
-    const credentials = JSON.parse(fs.readFileSync(homedir + nearConfig.keyPath));
+const getKeyStore = async function () {
+    // const credentials = JSON.parse(fs.readFileSync(homedir + nearConfig.keyPath));
+    // const myKeyStore = new nearAPI.keyStores.InMemoryKeyStore();
+    // myKeyStore.setKey(nearConfig.networkId, nearConfig.accountId, nearAPI.KeyPair.fromString(credentials.private_key));
+    // return myKeyStore;
+
     const myKeyStore = new nearAPI.keyStores.InMemoryKeyStore();
-    myKeyStore.setKey(nearConfig.networkId, nearConfig.accountId, nearAPI.KeyPair.fromString(credentials.private_key));
+    // creates a public / private key pair using the provided private key
+    const keyPair = nearAPI.KeyPair.fromRandom("Ed25519");
+    // adds the keyPair you created to keyStore
+    await myKeyStore.setKey("testnet", nearConfig.accountId, keyPair);
     return myKeyStore;
+
 };
 
 
@@ -49,7 +56,7 @@ const getContract = async function () {
     const account = await nearConnection.account(nearConfig.accountId);
     const contract = new nearAPI.Contract(
             account, // the account object that is connecting
-            "dev-1667590812807-84629299206142",
+            nearConfig.accountId,
             {
                 viewMethods: ["root", "nullifiers"], // view methods do not change state but usually return a value
                 changeMethods: ["vote"], // change methods modify state
@@ -155,4 +162,3 @@ const main = async () => {
 };
 
 main()
-
