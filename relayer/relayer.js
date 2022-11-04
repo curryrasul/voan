@@ -72,16 +72,19 @@ const vote = async function (publicSignals, proof) {
                     {"proof": JSON.stringify(proof), "pub_inputs": JSON.stringify(publicSignals)},
                     "300000000000000", // attached GAS (optional)
                 );
-                
                 console.log(res);
+                return res
             }else{
                 console.log("Already voted");
+                return "Already voted"
             }
         }else{
             console.log("Wrong proof"); 
+            return "Wrong proof"
         }
     }else{
         console.log("Wrong public input: Root of the Merkle Tree");
+        return "Wrong public input: Root of the Merkle Tree"
     }
 };
 
@@ -123,17 +126,22 @@ const requestListener = function (req, res) {
         var body = '';
         req.on('data', function (data) {
             body += data;
+            
+            // Too much POST data, kill the connection!
+            if (body.length > 1e6)
+                req.connection.destroy();
+        });
+        req.on('end', async function (data){
             // JSON obj 
             const obj = JSON.parse(body);
             const publicSignals = obj["public"]
             const proof = obj["proof"][0]
 
-            vote(publicSignals, proof);
+            const res_message = await vote(publicSignals, proof);
 
-            
-            // Too much POST data, kill the connection!
-            if (body.length > 1e6)
-                req.connection.destroy();
+            res.setHeader("Content-Type", "application/json");
+            res.writeHead(200);
+            res.end(`{"message": ` + res_message + `}`);     
         });
     }
 };
