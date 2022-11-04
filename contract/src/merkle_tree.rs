@@ -38,7 +38,7 @@ impl MerkleTree {
     }
 
     /// Function that inserts the leaf into the Merkle Tree
-    pub(crate) fn insert(&mut self, leaf: &str) {
+    pub(crate) fn insert(&mut self, leaf: &str) -> usize {
         let mut cur_pos = self.key;
         self.key += 1;
 
@@ -65,6 +65,8 @@ impl MerkleTree {
             let output = fr_to_hex(&hasher.multi_hash(&arr, mimc_key, 1)[0]);
             self.leaves[cur_pos] = output;
         }
+
+        self.key - 8
     }
 
     /// Function that returns the leaves of the Merkle Tree
