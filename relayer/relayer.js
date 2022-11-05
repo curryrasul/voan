@@ -13,31 +13,32 @@ const serverConfig = {
 
 const nearConfig = {
     networkId: "testnet",
-    accountId: process.argv[2], // second command line argument is accountId
+    accountId: process.argv[2], // first command line argunet is accountId
+    contractId: process.argv[3], // second command line argument is contractId
+    keyPath: `/.near-credentials/testnet/${process.argv[2]}.json`,
     vKeyPath: "/projects/voan/circuits/output/verification_key.json" // path to "verification_key.json"
 };
 
 
 const getKeyStore = async function () {
-    // const credentials = JSON.parse(fs.readFileSync(homedir + nearConfig.keyPath));
-    // const myKeyStore = new nearAPI.keyStores.InMemoryKeyStore();
-    // myKeyStore.setKey(nearConfig.networkId, nearConfig.accountId, nearAPI.KeyPair.fromString(credentials.private_key));
-    // return myKeyStore;
-
+    const credentials = JSON.parse(fs.readFileSync(homedir + nearConfig.keyPath));
     const myKeyStore = new nearAPI.keyStores.InMemoryKeyStore();
-    // creates a public / private key pair using the provided private key
-    const keyPair = nearAPI.KeyPair.fromRandom("Ed25519");
-    // adds the keyPair you created to keyStore
-    await myKeyStore.setKey("testnet", nearConfig.accountId, keyPair);
+    myKeyStore.setKey(nearConfig.networkId, nearConfig.accountId, nearAPI.KeyPair.fromString(credentials.private_key));
     return myKeyStore;
 
+    // const myKeyStore = new nearAPI.keyStores.InMemoryKeyStore();
+    // // creates a public / private key pair using the provided private key
+    // const keyPair = nearAPI.KeyPair.fromRandom("Ed25519");
+    // // adds the keyPair you created to keyStore
+    // await myKeyStore.setKey("testnet", nearConfig.accountId, keyPair);
+    // return myKeyStore;
 };
 
 
 const getNearConnection = async function () {
     const nearConnectionConfig = {
         networkId: nearConfig.networkId,
-        keyStore: getKeyStore(), 
+        keyStore: await getKeyStore(), 
         nodeUrl: "https://rpc.testnet.near.org",
         walletUrl: "https://wallet.testnet.near.org",
         helperUrl: "https://helper.testnet.near.org",
@@ -55,7 +56,7 @@ const getContract = async function () {
     const account = await nearConnection.account(nearConfig.accountId);
     const contract = new nearAPI.Contract(
             account, // the account object that is connecting
-            nearConfig.accountId,
+            nearConfig.contractId,
             {
                 viewMethods: ["root", "nullifiers"], // view methods do not change state but usually return a value
                 changeMethods: ["vote"], // change methods modify state
