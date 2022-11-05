@@ -33,6 +33,8 @@ pub struct Contract {
     vkey: PreparedVerifyingKey,
     // Positive votes
     votes_pos: u8,
+    // Proposal message
+    proposal: String,
 }
 
 #[near_bindgen]
@@ -44,12 +46,16 @@ impl Contract {
         voters_whitelist: HashSet<AccountId>,
         signup_deadline: u64,
         voting_deadline: u64,
+        proposal: String,
     ) -> Self {
         // Check if the contract is not already initialized
         assert!(
             !near_sdk::env::state_exists(),
             "The contract has already been initialized"
         );
+
+        // Maximum 8 accounts
+        assert!(!voters_whitelist.is_empty() && voters_whitelist.len() <= 8);
 
         // Verification key parsing
         let vkey = parse_verification_key(vkey).expect("Cannot deserialize verification key");
@@ -64,6 +70,7 @@ impl Contract {
             nullifiers: HashSet::new(),
             vkey,
             votes_pos: 0,
+            proposal,
         }
     }
 
@@ -177,5 +184,15 @@ impl Contract {
     /// View function that returns voting deadline
     pub fn get_voting_deadline(&self) -> u64 {
         self.voting_deadline
+    }
+
+    /// View function, that returns proposal message
+    pub fn get_proposal(&self) -> String {
+        self.proposal.clone()
+    }
+
+    /// View function, that returns current whitelist
+    pub fn get_cur_list(&self) -> HashSet<AccountId> {
+        self.voters_whitelist.clone()
     }
 }
