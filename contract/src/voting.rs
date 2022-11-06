@@ -1,57 +1,62 @@
 use crate::*;
 use std::collections::HashSet;
 
+#[derive(BorshSerialize, BorshDeserialize, PartialEq, Eq, Debug)]
+pub(crate) enum Status {
+    Open,
+    Close,
+}
+
 #[derive(BorshSerialize, BorshDeserialize)]
-pub struct Voting {
+pub(crate) struct Voting {
     // Merkle tree
-    merkle_tree: MerkleTree,
+    pub(crate) merkle_tree: MerkleTree,
     // Whitelist of voters
-    voters_whitelist: HashSet<AccountId>,
+    pub(crate) voters_whitelist: HashSet<AccountId>,
     // Deadline for sign up
-    signup_deadline: u64,
+    pub(crate) signup_deadline: u64,
     // Deadline for voting
-    voting_deadline: u64,
+    pub(crate) voting_deadline: u64,
     // Nullifiers HashSet to prevent the double-vote
-    nullifiers: HashSet<String>,
-    // Verifying Groth16 key
-    vkey: PreparedVerifyingKey,
+    pub(crate) nullifiers: HashSet<String>,
     // Positive votes
-    votes_pos: u8,
+    pub(crate) votes_pos: u8,
     // Proposal message
-    proposal: String,
+    pub(crate) proposal: String,
+    // Voting Status
+    pub(crate) status: Status,
+    // Voting threshold
+    pub(crate) threshold: u8,
 }
 
 impl Voting {
     pub fn new(
-        vkey: String,
         voters_whitelist: HashSet<AccountId>,
+        threshold: u8,
         signup_deadline: u64,
         voting_deadline: u64,
         proposal: String,
     ) -> Self {
-        // Check if the contract is not already initialized
+        let num_of_participants = voters_whitelist.len();
         assert!(
-            !near_sdk::env::state_exists(),
-            "The contract has already been initialized"
+            (1..=8).contains(&num_of_participants),
+            "Minumum 1 & Maximum 8 participants"
+        );
+        assert!(
+            threshold > 0 && threshold as usize <= num_of_participants,
+            "Threshold have to be bigger than 0 and lower or equal to number of participants"
         );
 
-        // Maximum 8 accounts
-        assert!(!voters_whitelist.is_empty() && voters_whitelist.len() <= 8);
-
-        // Verification key parsing
-        let vkey = parse_verification_key(vkey).expect("Cannot deserialize verification key");
-        let vkey = get_prepared_verifying_key(vkey);
-
-        // Construct the contract
         Self {
             merkle_tree: MerkleTree::new(3),
             voters_whitelist,
             signup_deadline,
             voting_deadline,
             nullifiers: HashSet::new(),
-            vkey,
             votes_pos: 0,
             proposal,
+            threshold,
+            status: Status::Open,
         }
     }
 
@@ -83,97 +88,5 @@ impl Voting {
         );
 
         pos
-    }
-
-    /// Vote function
-    pub fn vote(&mut self, proof: String, pub_inputs: String) {
-        // Deadline checks
-        assert!(
-            env::block_timestamp() > self.signup_deadline || self.voters_whitelist.is_empty(),
-            "Registration is not completed yet"
-        );
-        assert!(
-            env::block_timestamp() < self.voting_deadline,
-            "Voting is finished"
-        );
-
-        let tmp: [String; 3] =
-            serde_json::from_str(&pub_inputs).expect("Cannot deserialize pub_inputs");
-
-        // Nullifier check
-        assert!(!self.nullifiers.contains(&tmp[0]), "Already voted");
-        self.nullifiers.insert(tmp[0].clone());
-
-        // Merkle Tree Root check
-        assert_eq!(
-            hex_to_fr(&self.merkle_tree.root()),
-            str_to_fr(&tmp[1]),
-            "Wrong public input: Root of the Merkle Tree"
-        );
-
-        // SNARK Proof check
-        assert!(
-            verify_proof(self.vkey.clone(), proof, pub_inputs).expect("Cannot verify the proof"),
-            "Wrong proof"
-        );
-
-        // Vote
-        let vote: u8 = tmp[2].parse().expect("Cannot parse vote!");
-        if vote == 1 {
-            self.votes_pos += 1;
-            log!("Votes_pos incremented! Votes_pos = {}", self.votes_pos);
-        } else {
-            log!("Voted against! Votes_pos not incremented");
-        }
-    }
-
-    /// View function that returns Merkle Tree
-    pub fn merkle_tree(&self) -> Vec<String> {
-        self.merkle_tree.leaves()
-    }
-
-    /// View function that returns self.votes_pos
-    pub fn how_many_pos(&self) -> u8 {
-        self.votes_pos
-    }
-
-    /// View function that returns root of the Merkle Tree
-    pub fn root(&self) -> String {
-        self.merkle_tree.root().parse::<U256>().unwrap().to_string()
-    }
-
-    /// View function that returns siblings for the specified key
-    pub fn siblings(&self, key: usize) -> Vec<String> {
-        self.merkle_tree
-            .get_siblings(key)
-            .iter()
-            .map(|s| s.parse::<U256>().unwrap().to_string())
-            .rev()
-            .collect()
-    }
-
-    /// View function that returns current nullifiers
-    pub fn nullifiers(&self) -> HashSet<String> {
-        self.nullifiers.clone()
-    }
-
-    /// View function that returns signup deadline
-    pub fn get_signup_deadline(&self) -> u64 {
-        self.signup_deadline
-    }
-
-    /// View function that returns voting deadline
-    pub fn get_voting_deadline(&self) -> u64 {
-        self.voting_deadline
-    }
-
-    /// View function, that returns proposal message
-    pub fn get_proposal(&self) -> String {
-        self.proposal.clone()
-    }
-
-    /// View function, that returns current whitelist
-    pub fn get_cur_list(&self) -> HashSet<AccountId> {
-        self.voters_whitelist.clone()
     }
 }
