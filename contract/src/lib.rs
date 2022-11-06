@@ -160,6 +160,11 @@ impl Contract {
         self.votings.get(&id).expect(ID_ERR).votes_pos
     }
 
+    /// View function that returns self.threshold
+    pub fn get_threshold(&self, id: ID) -> u8 {
+        self.votings.get(&id).expect(ID_ERR).threshold
+    }
+
     /// View function that returns root of the Merkle Tree
     pub fn root(&self, id: ID) -> String {
         self.votings.get(&id).expect(ID_ERR).merkle_tree.root()
