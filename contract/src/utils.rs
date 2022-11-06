@@ -7,6 +7,8 @@ construct_uint! {
     pub(crate) struct U256(4);
 }
 
+pub type ID = u64;
+
 // /// Helper function that tells what's the depth of the
 // /// tree must be
 // pub(crate) fn depth(num: usize) -> u8 {
