@@ -167,7 +167,14 @@ impl Contract {
 
     /// View function that returns root of the Merkle Tree
     pub fn root(&self, id: ID) -> String {
-        self.votings.get(&id).expect(ID_ERR).merkle_tree.root()
+        self.votings
+            .get(&id)
+            .expect(ID_ERR)
+            .merkle_tree
+            .root()
+            .parse::<U256>()
+            .unwrap()
+            .to_string()
     }
 
     /// View function that returns siblings for the specified key
