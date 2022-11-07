@@ -7,6 +7,10 @@ construct_uint! {
     pub(crate) struct U256(4);
 }
 
+pub(crate) type ID = u64;
+
+pub(crate) static ID_ERR: &str = "No voting with such ID!";
+
 // /// Helper function that tells what's the depth of the
 // /// tree must be
 // pub(crate) fn depth(num: usize) -> u8 {
