@@ -11,12 +11,16 @@ const serverConfig = {
 };
 
 
+const { dirname } = require('path');
+const appDir = dirname(require.main.filename);
+
+
 const nearConfig = {
     networkId: "testnet",
     accountId: process.argv[2], // first command line argunet is accountId
     contractId: process.argv[3], // second command line argument is contractId
     keyPath: `/.near-credentials/testnet/${process.argv[2]}.json`,
-    vKeyPath: "/projects/voan/circuits/output/verification_key.json" // path to "verification_key.json"
+    vKeyPath: appDir + "/circuits/output/verification_key.json" // path to "verification_key.json"
 };
 
 
@@ -58,7 +62,7 @@ const getContract = async function () {
             account, // the account object that is connecting
             nearConfig.contractId,
             {
-                viewMethods: ["root", "nullifiers"], // view methods do not change state but usually return a value
+                viewMethods: ["root", "nullifiers", "get_voting_deadline"], // view methods do not change state but usually return a value
                 changeMethods: ["vote"], // change methods modify state
             });
 
@@ -75,12 +79,17 @@ const vote = async function (id, publicSignals, proof) {
         if (await proofVerify(publicSignals, proof)){
             // check presence of nullifier
             if (await nullifierVerify(id, publicSignals[0])){
-                const res = await contract.vote(
-                    {"id": parseInt(id), "proof": JSON.stringify(proof), "pub_inputs": JSON.stringify(publicSignals)},
-                    "300000000000000", // attached GAS (optional)
-                );
-                console.log(res);
-                return res;
+                if (await deadlineVerify(id)){
+                    const res = await contract.vote(
+                        {"id": parseInt(id), "proof": JSON.stringify(proof), "pub_inputs": JSON.stringify(publicSignals)},
+                        "300000000000000", // attached GAS (optional)
+                    );
+                    console.log(res);
+                    return res;
+                }else{
+                    console.log("Voting deadline");
+                    return "Voting deadline";
+                }
             }else{
                 console.log("Already voted");
                 return "Already voted";
@@ -124,7 +133,18 @@ const rootVerify = async function (id, root) {
 
     // get root from s-c
     const response = await contract.root({"id": parseInt(id)});
+
     return (root === response)
+};
+
+
+const deadlineVerify = async function (id) {
+    const contract = await getContract();
+
+    const deadlineResponse = await contract.get_voting_deadline({"id": parseInt(id)});
+    const hrTime = process.hrtime();
+
+    return (hrTime[0] * 10000000000000 + hrTime[1] > deadlineResponse)? true: false 
 };
 
 
