@@ -66,17 +66,17 @@ const getContract = async function () {
 };
 
 
-const vote = async function (publicSignals, proof) {
+const vote = async function (id, publicSignals, proof) {
     const contract = await getContract();
 
     // Merkle Tree root comparison result
-    if (await rootVerify(publicSignals[1])){
+    if (await rootVerify(id, publicSignals[1])){
         // snark proof verification result
         if (await proofVerify(publicSignals, proof)){
             // check presence of nullifier
-            if (await nullifierVerify(publicSignals[0])){
+            if (await nullifierVerify(id, publicSignals[0])){
                 const res = await contract.vote(
-                    {"proof": JSON.stringify(proof), "pub_inputs": JSON.stringify(publicSignals)},
+                    {"id": parseInt(id), "proof": JSON.stringify(proof), "pub_inputs": JSON.stringify(publicSignals)},
                     "300000000000000", // attached GAS (optional)
                 );
                 console.log(res);
@@ -105,11 +105,11 @@ const proofVerify = async function (publicSignals, proof) {
 };
 
 
-const nullifierVerify = async function (nullifier) {
+const nullifierVerify = async function (id, nullifier) {
     const contract = await getContract();
 
     // get nullifier array from s-c
-    const nullifiers = await contract.nullifiers();
+    const nullifiers = await contract.nullifiers({"id": parseInt(id)});
     for (const null_pair of Object.entries(nullifiers)) {
         if (null_pair[1] === nullifier){
             return false;
@@ -119,11 +119,11 @@ const nullifierVerify = async function (nullifier) {
 };  
 
 
-const rootVerify = async function (root) {
+const rootVerify = async function (id, root) {
     const contract = await getContract();
 
     // get root from s-c
-    const response = await contract.root();
+    const response = await contract.root({"id": parseInt(id)});
     return (root === response)
 };
 
@@ -141,10 +141,11 @@ const requestListener = function (req, res) {
         req.on('end', async function (data){
             // JSON obj 
             const obj = JSON.parse(body);
+            const id = obj["id"]
             const publicSignals = obj["public"];
             const proof = obj["proof"][0];
 
-            const res_message = await vote(publicSignals, proof);
+            const res_message = await vote(id, publicSignals, proof);
 
             res.setHeader("Content-Type", "application/json");
             res.writeHead(200);
