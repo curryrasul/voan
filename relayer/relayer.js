@@ -12,7 +12,7 @@ const serverConfig = {
 
 
 const { dirname } = require('path');
-const appDir = dirname(require.main.filename);
+const appDir = dirname(__dirname);
 
 
 const nearConfig = {
@@ -62,7 +62,7 @@ const getContract = async function () {
             account, // the account object that is connecting
             nearConfig.contractId,
             {
-                viewMethods: ["root", "nullifiers", "get_voting_deadline"], // view methods do not change state but usually return a value
+                viewMethods: ["root", "nullifiers", "get_voting_deadline", "how_many_pos", "get_threshold"], // view methods do not change state but usually return a value
                 changeMethods: ["vote"], // change methods modify state
             });
 
@@ -80,12 +80,17 @@ const vote = async function (id, publicSignals, proof) {
             // check presence of nullifier
             if (await nullifierVerify(id, publicSignals[0])){
                 if (await deadlineVerify(id)){
-                    const res = await contract.vote(
-                        {"id": parseInt(id), "proof": JSON.stringify(proof), "pub_inputs": JSON.stringify(publicSignals)},
-                        "300000000000000", // attached GAS (optional)
-                    );
-                    console.log(res);
-                    return res;
+                    if (await thresholdVerify(id)){
+                        const res = await contract.vote(
+                            {"id": parseInt(id), "proof": JSON.stringify(proof), "pub_inputs": JSON.stringify(publicSignals)},
+                            "300000000000000", // attached GAS (optional)
+                        );
+                        console.log(res);
+                        return res;
+                    }else{
+                        console.log("Voting Closed");
+                        return "Voting Closed";
+                    }
                 }else{
                     console.log("Voting deadline");
                     return "Voting deadline";
@@ -106,8 +111,7 @@ const vote = async function (id, publicSignals, proof) {
 
 
 const proofVerify = async function (publicSignals, proof) {
-    // TO DO check vKeyPath 
-    const vKey = JSON.parse(fs.readFileSync(homedir + nearConfig.vKeyPath));
+    const vKey = JSON.parse(fs.readFileSync(nearConfig.vKeyPath));
     const res = await snarkjs.groth16.verify(vKey, publicSignals, proof);
 
     return res;
@@ -143,9 +147,19 @@ const deadlineVerify = async function (id) {
 
     const deadlineResponse = await contract.get_voting_deadline({"id": parseInt(id)});
     const hrTime = process.hrtime();
-
-    return (hrTime[0] * 10000000000000 + hrTime[1] > deadlineResponse)? true: false 
+    
+    return (hrTime[0] * 10000000000000 + hrTime[1] < deadlineResponse)
 };
+
+
+const thresholdVerify = async function (id) {
+    const contract = await getContract();
+
+    const threshold = await contract.get_threshold({"id": parseInt(id)});
+    const pos = await contract.how_many_pos({"id": parseInt(id)});
+
+    return (pos < threshold)
+}
 
 
 const requestListener = function (req, res) {
