@@ -22,19 +22,67 @@
             </div>
         </div>
     </header>
-    <main id="index" class="wrapper">
+    <main class="wrapper">
         <div class="content">
+            <p>To view or participate in a vote, you can search for it by its ID:</p>
             <div class="form">
-                <label>Vote ID</label>
+                <label data-hover="ID of vote that you want to find">Vote ID</label>
                 <input id="vote-id" type="text" placeholder="Vote ID">
-                <button id="enter" action="none">ENTER</button>
+                <button id="get-vote">ENTER</button>
+            </div>
+            <p>Or you can <span class="open-popup text-button" data-window="create-vote-dialog">create</span> your own
+                vote</p>
+        </div>
+    </main>
+    <main id="create-vote-dialog" class="pop-up-wrapper">
+        <div class="pop-up">
+            <div class="close-popup" data-window="create-vote-dialog">&#10006</div>
+            <h2>Create your own vote</h2>
+            <div class="form">
+                <label data-hover="Proposal of voting">Proposal</label>
+                <textarea id="proposal" type="text" placeholder="Proposal" rows="5"></textarea>
+                <div class="form-line">
+                    <label class="col-50" data-hover="Time, until users can sign up on vote">Sign up deadline</label>
+                    <label class="col-50" data-hover="Time, until users can vote">Voting deadline</label>
+                    <label class="col-25" data-hover="Count of positive votes, needed to end vote">Threshold</label>
+                </div>
+                <div class="form-line">
+                    <input class="col-50" id="signup-deadline" type="datetime-local">
+                    <input class="col-50" id="voting-deadline" type="datetime-local">
+                    <input class="col-25" id="threshold" type="number" value="0">
+                </div>
+                <label data-hover="List of users, who can vote">Voters whitelist</label>
+                <div id="whitelist">
+                </div>
+                <div class="form-line">
+                    <input id="member-name" type="text" placeholder="Add to whitelist">
+                    <div id="add-member">+</div>
+                </div>
+                <button id="create-vote" class="">Create vote</button>
+                <div id="info-message">fnsiudfnsioefnse fse fnseui fnseiu fseui fni</div>
             </div>
         </div>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/near-api-js@0.44.0/dist/near-api-js.js"></script>
-    <script src="js/jquery-3.6.1.min.js"></script>
-    <script src="js/config.js"></script>
-    <script src="js/main.js"></script>
+    <main id="creating-done" class="pop-up-wrapper">
+        <div class="pop-up">
+            <div class="close-popup" data-window="creating-done">&#10006</div>
+            <h2>Vote is created</h2>
+            <div class="form">
+                <div>Your vote is created with ID <span id="created-vote-id"></span>.</div>
+                <div id="created-vote-link">Link to your vote:<br><a href=""></a></div>
+                <div id="created-link-share">
+                    Share:
+                    <a class="tg-link" href=""></a>
+                </div>
+            </div>
+        </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/near-api-js@0.44.0/dist/near-api-js.js"></script>
+        <script src="js/jquery-3.6.1.min.js"></script>
+        <script src="js/jquery-ui.min.js"></script>
+        <script src="js/config.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/index.js"></script>
 </body>
 
 </html>

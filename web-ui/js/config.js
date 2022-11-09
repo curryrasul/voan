@@ -1,4 +1,5 @@
 const RAFFLE_CONTRACT = 'dev-1667755352527-99327939881892'
+const DOMAIN = 'http://localhost'
 
 function getConfig(env) {
     switch (env) {

@@ -7,7 +7,7 @@ async function initContract() {
     window.accountId = window.walletConnection.getAccountId()
     window.voanContract = await new Contract(window.walletConnection.account(), nearConfig.contractName, {
         viewMethods: [],
-        changeMethods: [],
+        changeMethods: ['new_voting'],
     })
 }
 
@@ -20,6 +20,11 @@ function login() {
     window.walletConnection.requestSignIn(nearConfig.contractName)
 }
 
+async function createVote(options) {
+    const voteID = await window.voanContract.new_voting(options, "300000000000000")
+    return voteID
+}
+
 window.nearInitPromise = initContract().then(() => {
     if (window.walletConnection.isSignedIn()) {
         $('#account-name').text(window.walletConnection.account().accountId)
@@ -29,10 +34,30 @@ window.nearInitPromise = initContract().then(() => {
     }
 })
 
-$('#login').on("click", () => {
+$('#login').on('click', () => {
     login()
 })
 
-$('#logout').on("click", () => {
+$('#logout').on('click', () => {
     logout()
+})
+
+function openPopup(id) {
+    $(`#${id}`).css('display', 'flex').animate({
+        opacity: 1
+    }, 200)
+}
+function closePopup(id) {
+    $(`#${id}`).animate({
+        opacity: 0
+    }, 200, (e) => {
+        $(`#${id}`).css('display', 'none')
+    })
+}
+
+$('.open-popup').on('click', (elem) => {
+    openPopup($(elem.target).attr('data-window'))
+})
+$('.close-popup').on('click', (elem) => {
+    closePopup($(elem.target).attr('data-window'))
 })
