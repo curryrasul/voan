@@ -2,22 +2,15 @@ member_elem = (name) => `<div class="whitelist-member" data-member="${name}"><di
 
 get_members = () => $('.whitelist-member-name').map((i, val) => val.textContent).toArray()
 
-function dateToInputFormat(date) {
-    year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date)
-    month = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(date)
-    day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date)
-    time = new Intl.DateTimeFormat('en', { hour: '2-digit', hour12: false, minute: '2-digit' }).format(date)
-    str = `${year}-${month}-${day}T${time}`
-    return str
-}
-
-function toUnixNano(date) {
-    return date.getTime() * 1000000
-}
+const inputDateFormat = 'YYYY-MM-DDTHH:mm'
 
 $('document').ready(() => {
     refresh_counter()
     refresh_deadlines()
+})
+
+$('#get-vote').on('click', () => {
+    window.location.replace(`vote.html?id=${$('#vote-id').val()}`)
 })
 
 function delete_member(elem) {
@@ -66,18 +59,19 @@ function refresh_counter() {
 }
 
 function refresh_deadlines() {
-    curr_date = new Date()
-    signup_value = $('#signup-deadline').val()
-    voting_value = $('#voting-deadline').val()
-    if (signup_value == "" || new Date(signup_value) < curr_date) {
-        curr_date.setHours(curr_date.getHours() + 1)
-        $('#signup-deadline').val(dateToInputFormat(curr_date))
-        signup_value = $('#signup-deadline').val()
+    curr_date = moment()
+    curr_date.seconds(0)
+    signup_date = moment($('#signup-deadline').val())
+    voting_date = moment($('#voting-deadline').val())
+    if (!signup_date._isValid || signup_date.isBefore(curr_date)) {
+        signup_date = curr_date
+        signup_date.add(1, 'h')
+        $('#signup-deadline').val(signup_date.format(inputDateFormat))
     }
-    if (voting_value == "" || new Date(voting_value) < new Date(signup_value)) {
-        signup_date = new Date(signup_value)
-        signup_date.setHours(signup_date.getHours() + 1)
-        $('#voting-deadline').val(dateToInputFormat(signup_date))
+    if (!voting_date._isValid || voting_date.isBefore(signup_date)) {
+        voting_date = signup_date
+        voting_date.add(1, 'h')
+        $('#voting-deadline').val(voting_date.format(inputDateFormat))
     }
 }
 
@@ -106,17 +100,20 @@ $('#member-name').keyup((event) => {
     }
 })
 
-$('#sign-up-deadline').on('change', () => refresh_deadlines())
+$('#signup-deadline').on('change', () => refresh_deadlines())
 $('#voting-deadline').on('change', () => refresh_deadlines())
 $('#threshold').on('change', () => refresh_counter())
 
 $('#create-vote').on('click', () => {
+    $('#create-vote').prop('disabled', true).addClass('loading')
+
     if (!window.walletConnection.isSignedIn()) {
         $('#info-message').text('To create vote, you need to login').animate({
             opacity: 1,
         }, 200).animate({
             opacity: 0,
         }, 2000)
+        $('#create-vote').prop('disabled', false).removeClass('loading')
         return
     }
 
@@ -129,6 +126,7 @@ $('#create-vote').on('click', () => {
         }, 200).animate({
             backgroundColor: "#eeeeee",
         }, 1000)
+        $('#create-vote').prop('disabled', false).removeClass('loading')
         return
     }
 
@@ -139,6 +137,7 @@ $('#create-vote').on('click', () => {
         }, 200).animate({
             backgroundColor: "#eeeeee",
         }, 1000)
+        $('#create-vote').prop('disabled', false).removeClass('loading')
         return
     }
 
@@ -149,13 +148,33 @@ $('#create-vote').on('click', () => {
         }, 200).animate({
             backgroundColor: "#eeeeee",
         }, 1000)
+        $('#create-vote').prop('disabled', false).removeClass('loading')
         return
     }
 
-    options.signup_deadline = toUnixNano(new Date($('#signup-deadline').val()))
-    options.voting_deadline = toUnixNano(new Date($('#voting-deadline').val()))
+    signup_deadline = moment($('#signup-deadline').val())
+    if (!signup_deadline._isValid) {
+        $('#signup-deadline').animate({
+            backgroundColor: "#ffcccc",
+        }, 200).animate({
+            backgroundColor: "#eeeeee",
+        }, 1000)
+        $('#create-vote').prop('disabled', false).removeClass('loading')
+        return
+    }
+    options.signup_deadline = signup_deadline.unix() * 1000000000
 
-    $('#create-vote').prop('disabled', true).addClass('loading')
+    voting_deadline = moment($('#voting-deadline').val())
+    if (!voting_deadline._isValid) {
+        $('#voting-deadline').animate({
+            backgroundColor: "#ffcccc",
+        }, 200).animate({
+            backgroundColor: "#eeeeee",
+        }, 1000)
+        $('#create-vote').prop('disabled', false).removeClass('loading')
+        return
+    }
+    options.voting_deadline = voting_deadline.unix() * 1000000000
 
     createVote(options).then((result) => {
         vote_created(result)
