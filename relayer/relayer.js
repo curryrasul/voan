@@ -86,26 +86,26 @@ const vote = async function (id, publicSignals, proof) {
                             "300000000000000", // attached GAS (optional)
                         );
                         console.log(res);
-                        return res;
+                        return [res, true];
                     }else{
                         console.log("Voting Closed");
-                        return "Voting Closed";
+                        return ["Voting Closed", false];
                     }
                 }else{
                     console.log("Voting deadline");
-                    return "Voting deadline";
+                    return ["Voting deadline", false];
                 }
             }else{
                 console.log("Already voted");
-                return "Already voted";
+                return ["Already voted", false];
             }
         }else{
             console.log("Wrong proof"); 
-            return "Wrong proof";
+            return ["Wrong proof", false];
         }
     }else{
         console.log("Wrong public input: Root of the Merkle Tree");
-        return "Wrong public input: Root of the Merkle Tree";
+        return ["Wrong public input: Root of the Merkle Tree", false];
     }
 };
 
@@ -174,16 +174,28 @@ const requestListener = function (req, res) {
         });
         req.on('end', async function (data){
             // JSON obj 
-            const obj = JSON.parse(body);
+            try {
+                const obj = JSON.parse(body);
+            } catch (err) {
+                res.setHeader("Content-Type", "application/json");
+                res.writeHead(400);
+                res.end(`{"message": "Use JSON format"}`);   
+            }
+            
             const id = obj["id"]
             const publicSignals = obj["public"];
             const proof = obj["proof"][0];
 
-            const res_message = await vote(id, publicSignals, proof);
-
-            res.setHeader("Content-Type", "application/json");
-            res.writeHead(200);
-            res.end(`{"message": ` + res_message + `}`);     
+            const [res_message, status_flag] = await vote(id, publicSignals, proof);
+            if (status_flag){
+                res.setHeader("Content-Type", "application/json");
+                res.writeHead(200);
+                res.end(`{"message": ` + res_message + `}`);  
+            }else{
+                res.setHeader("Content-Type", "application/json");
+                res.writeHead(400);
+                res.end(`{"message": ` + res_message + `}`);  
+            }
         });
     }
 };
