@@ -81,11 +81,11 @@ const vote = async function (id, publicSignals, proof) {
             if (await nullifierVerify(id, publicSignals[0])){
                 if (await deadlineVerify(id)){
                     if (await thresholdVerify(id)){
-                        const res = await contract.vote(
-                            {"id": parseInt(id), "proof": JSON.stringify(proof), "pub_inputs": JSON.stringify(publicSignals)},
+                        await contract.vote(
+                            {"id": id, "proof": JSON.stringify(proof), "pub_inputs": JSON.stringify(publicSignals)},
                             "300000000000000", // attached GAS (optional)
                         );
-                        console.log(res);
+                        const res = "Vote passed!!!"
                         return [res, true];
                     }else{
                         console.log("Voting Closed");
@@ -122,7 +122,7 @@ const nullifierVerify = async function (id, nullifier) {
     const contract = await getContract();
 
     // get nullifier array from s-c
-    const nullifiers = await contract.nullifiers({"id": parseInt(id)});
+    const nullifiers = await contract.nullifiers({"id": id});
     for (const null_pair of Object.entries(nullifiers)) {
         if (null_pair[1] === nullifier){
             return false;
@@ -136,7 +136,7 @@ const rootVerify = async function (id, root) {
     const contract = await getContract();
 
     // get root from s-c
-    const response = await contract.root({"id": parseInt(id)});
+    const response = await contract.root({"id": id});
 
     return (root === response)
 };
@@ -145,7 +145,7 @@ const rootVerify = async function (id, root) {
 const deadlineVerify = async function (id) {
     const contract = await getContract();
 
-    const deadlineResponse = await contract.get_voting_deadline({"id": parseInt(id)});
+    const deadlineResponse = await contract.get_voting_deadline({"id": id});
     const hrTime = process.hrtime();
     
     return (hrTime[0] * 10000000000000 + hrTime[1] < deadlineResponse)
@@ -155,8 +155,8 @@ const deadlineVerify = async function (id) {
 const thresholdVerify = async function (id) {
     const contract = await getContract();
 
-    const threshold = await contract.get_threshold({"id": parseInt(id)});
-    const pos = await contract.how_many_pos({"id": parseInt(id)});
+    const threshold = await contract.get_threshold({"id": id});
+    const pos = await contract.how_many_pos({"id": id});
 
     return (pos < threshold)
 }
@@ -172,30 +172,29 @@ const requestListener = function (req, res) {
             if (body.length > 1e6)
                 req.connection.destroy();
         });
-        req.on('end', async function (data){
+        req.on('end', async function (){
             // JSON obj 
             try {
                 const obj = JSON.parse(body);
+                const id = parseInt(obj["id"]);
+                const publicSignals = obj["public"];
+                const proof = obj["proof"][0];
+
+                const [res_message, status_flag] = await vote(id, publicSignals, proof);
+                if (status_flag){
+                    res.setHeader("Content-Type", "application/json");
+                    res.writeHead(200);
+                    res.end(`{"message": ` + res_message + `}`);  
+                }else{
+                    res.setHeader("Content-Type", "application/json");
+                    res.writeHead(400);
+                    res.end(`{"message": ` + res_message + `}`);  
+                }
             } catch (err) {
                 res.setHeader("Content-Type", "application/json");
                 res.writeHead(400);
                 res.end(`{"message": "Use JSON format"}`);   
-            }
-            
-            const id = obj["id"]
-            const publicSignals = obj["public"];
-            const proof = obj["proof"][0];
-
-            const [res_message, status_flag] = await vote(id, publicSignals, proof);
-            if (status_flag){
-                res.setHeader("Content-Type", "application/json");
-                res.writeHead(200);
-                res.end(`{"message": ` + res_message + `}`);  
-            }else{
-                res.setHeader("Content-Type", "application/json");
-                res.writeHead(400);
-                res.end(`{"message": ` + res_message + `}`);  
-            }
+            } 
         });
     }
 };
