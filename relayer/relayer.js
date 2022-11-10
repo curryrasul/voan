@@ -111,9 +111,13 @@ const vote = async function (id, publicSignals, proof) {
 
 
 const proofVerify = async function (publicSignals, proof) {
-    const vKey = JSON.parse(fs.readFileSync(nearConfig.vKeyPath));
-    const res = await snarkjs.groth16.verify(vKey, publicSignals, proof);
-
+    var res = false
+    try{
+        const vKey = JSON.parse(fs.readFileSync(nearConfig.vKeyPath));
+        res = await snarkjs.groth16.verify(vKey, publicSignals, proof);
+    }catch (err){
+        console.log("proofVerify:" + err)
+    }
     return res;
 };
 
@@ -163,6 +167,7 @@ const thresholdVerify = async function (id) {
 
 
 const requestListener = function (req, res) {
+    res.setHeader("Content-Type", "application/json");
     if (req.method == 'POST') {
         var body = '';
         req.on('data', function (data) {
@@ -177,23 +182,26 @@ const requestListener = function (req, res) {
             try {
                 const obj = JSON.parse(body);
                 const id = parseInt(obj["id"]);
+                if (!Number.isInteger(id)){
+                    res.writeHead(400);
+                    res.end(`{"message": "Id is not Int"}`);
+                    return 0;  
+                }
                 const publicSignals = obj["public"];
                 const proof = obj["proof"][0];
 
                 const [res_message, status_flag] = await vote(id, publicSignals, proof);
                 if (status_flag){
-                    res.setHeader("Content-Type", "application/json");
                     res.writeHead(200);
                     res.end(`{"message": ` + res_message + `}`);  
                 }else{
-                    res.setHeader("Content-Type", "application/json");
                     res.writeHead(400);
                     res.end(`{"message": ` + res_message + `}`);  
                 }
             } catch (err) {
-                res.setHeader("Content-Type", "application/json");
+                console.log("requestListener: " + err);
                 res.writeHead(400);
-                res.end(`{"message": "Use JSON format"}`);   
+                res.end(`{"message": "Incorrect JSON"}`);   
             } 
         });
     }
