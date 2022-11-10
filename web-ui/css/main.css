@@ -241,11 +241,18 @@ label:hover:before {
 }
 
 .loading {
-    background-image: url('/img/loading.svg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
     color: transparent;
+}
+
+.loading.dark {
+    background-image: url('/img/loading_dark.svg');
+}
+
+.loading.light {
+    background-image: url('/img/loading_light.svg');
 }
 
 #created-link-share {
@@ -279,4 +286,114 @@ label:hover:before {
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+}
+
+#vote-card-proposal {
+    background-color: #eeeeee;
+    border-radius: 10px;
+    padding: 25px;
+}
+
+#vote-card {
+    display: flex;
+    flex-direction: row;
+    opacity: 0;
+    display: none;
+}
+
+.vote-card-main {
+    padding: 20px;
+    width: 700px;
+    max-width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#vote-card-side {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+    display: none;
+}
+
+.vote-card-side-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.vote-card-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 auto;
+    width: 600px;
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+
+#vote-card-id {
+    font-size: 2rem;
+}
+
+.vote-card-status {
+    text-align: right;
+}
+
+.vote-card-results {
+    margin: 0 auto;
+    width: 400px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 5px 20px;
+}
+
+.vote-card-votes {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.vote-card-count {
+    margin: 5px;
+    display: inline-block;
+}
+
+.vote-card-icon {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+#placeholder {
+    height: 200px;
+    width: 200px;
+}
+
+#wrong-vote {
+    display: none;
+    opacity: 0;
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.wrong-vote a {
+    font-weight: normal;
+    font-size: 24px;
+    text-decoration: underline;
+    color: #4200bd;
+    font-style: italic;
+}
+
+#vote-registration {
+    padding: 5px;
+    margin-top: 20px;
+    display: none;
 }

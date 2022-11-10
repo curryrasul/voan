@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/main.css">
+    <title>VOAN</title>
+</head>
+
+<body>
+    <header>
+        <div class="wrapper">
+            <div class="logo"><a href="index.html">VOAN</a></div>
+            <div class="near-account">
+                <button id="login">LOG IN</button>
+                <div id="account-info">
+                    <div id="account-name">...</div>
+                    <button id="logout">LOG OUT</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="wrapper">
+        <div class="content">
+            <div id="placeholder" class="loading light"></div>
+            <div id="wrong-vote">THIS VOTE NOT FOUND :(<br><a href="/">GO BACK</a></div>
+            <div id="vote-card">
+                <div class="vote-card-main">
+                    <div class="vote-card-header">
+                        <h1 id="vote-card-id">Vote #5</h1>
+                        <div class="vote-card-status">
+                            <span id="vote-card-phase">REGISTRATION</span><br>
+                            <span id="vote-card-deadline">TIME LEFT: </span>
+                        </div>
+                    </div>
+                    <div id="vote-card-proposal">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam quis
+                        elit
+                        tempor, consequat enim vel, malesuada ex. Aenean pretium id urna sit amet faucibus. Aliquam ac
+                        augue
+                        eu dui maximus pellentesque quis id risus. Vivamus egestas et odio quis tincidunt. Curabitur
+                        venenatis lectus in nulla finibus congue. Sed eget magna ligula. Etiam nec nisl eu ligula varius
+                        faucibus at at leo. Nunc sit amet convallis elit, et gravida turpis. Suspendisse potenti.
+                        Suspendisse dapibus at urna nec euismod. Aenean posuere massa leo, eget ornare elit elementum
+                        eu.
+                        Quisque eget faucibus ex. Morbi bibendum orci nibh, in vehicula enim dapibus dapibus. Nullam vel
+                        malesuada nibh. Nunc scelerisque ac nisl quis ultrices. Suspendisse potenti.</div>
+                    <div class="vote-card-results">
+                        <div class="vote-card-votes" data-answer="no">
+                            <div class="vote-card-icon" style="background-image: url(img/no.png)"></div>
+                            <div class="vote-card-count" id="no">5</div>
+                        </div>
+                        <div class="vote-card-votes" data-answer="yes">
+                            <div class="vote-card-count" id="yes">5</div>
+                            <div class="vote-card-icon" style="background-image: url(img/yes.png)"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="vote-card-side">
+                    <div class="vote-card-side-header">Waiting accounts:</div>
+                    <div id="waiting-list">
+                    </div>
+                    <button id="vote-registration">REGISTER</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/near-api-js@0.44.0/dist/near-api-js.js"></script>
+    <script src="js/jquery-3.6.1.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/vote.js"></script>
+</body>
+
+</html>

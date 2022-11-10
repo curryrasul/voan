@@ -176,7 +176,7 @@ $('#create-vote').on('click', () => {
     }
     options.voting_deadline = voting_deadline.unix() * 1000000000
 
-    createVote(options).then((result) => {
+    new_voting(options).then((result) => {
         vote_created(result)
     }, (error) => {
         $('#info-message').text(error.message).animate({
