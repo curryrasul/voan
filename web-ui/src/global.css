@@ -35,16 +35,11 @@ header {
     color: #ffffff;
 }
 
-#login {
-    display: none;
-}
-
-#account-info {
-    display: none;
+.account-info {
     text-align: right;
 }
 
-#logout {
+.logout {
     height: 18px;
     padding: 1px;
     width: auto;
@@ -97,79 +92,6 @@ main {
     text-align: left;
 }
 
-button {
-    background-color: #000000;
-    color: #ffffff;
-    width: 100%;
-    display: block;
-    padding: 10px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.text-button {
-    font-style: italic;
-    color: #4200bd;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-a {
-    font-size: inherit;
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
-}
-
-.pop-up-wrapper {
-    opacity: 0;
-    display: none;
-    z-index: 1;
-    background-color: rgba(0, 0, 0, 0.7);
-}
-
-.pop-up {
-    position: relative;
-    width: 600px;
-    max-width: 100vw;
-    border-radius: 15px;
-    background-color: #ffffff;
-    padding: 20px;
-}
-
-.close-popup {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    line-height: 1;
-    cursor: pointer;
-}
-
-.pop-up .form {
-    width: 100%;
-}
-
-.form-line {
-    display: flex;
-}
-
-.col-50 {
-    width: 50% !important;
-}
-
-.col-25 {
-    width: 25% !important;
-}
-
-.form-line>* {
-    margin-left: 5px;
-}
-
-.form-line>*:first-of-type {
-    margin-left: 0px;
-}
-
 label {
     position: relative;
 }
@@ -196,7 +118,75 @@ label:hover:before {
     visibility: visible;
 }
 
-#whitelist {
+button {
+    background-color: #000000;
+    color: #ffffff;
+    width: 100%;
+    display: block;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.text-button {
+    font-style: italic;
+    color: #4200bd;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+a {
+    font-size: inherit;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+/* CREATE_VOTE_FORM */
+.create-vote,
+.creating-done {
+    position: relative;
+    width: 600px;
+    max-width: 100vw;
+    border-radius: 15px;
+    background-color: #ffffff;
+    padding: 20px;
+}
+
+.back-button {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.create-vote .form {
+    width: 100%;
+}
+
+.form-line {
+    display: flex;
+}
+
+.col-50 {
+    width: 50% !important;
+}
+
+.col-25 {
+    width: 25% !important;
+}
+
+.form-line>* {
+    margin-left: 5px;
+}
+
+.form-line>*:first-of-type {
+    margin-left: 0px;
+}
+
+.whitelist {
     padding: 10px 0;
     background-color: #eeeeee;
     border-top-right-radius: 10px;
@@ -223,22 +213,52 @@ label:hover:before {
     margin: 0;
 }
 
-#member-name {
-    position: relative;
+input[name="member-name"] {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
 
-#add-member {
+.add-member {
     padding: 10px;
     cursor: pointer;
 }
 
-#info-message {
-    opacity: 0;
-    margin-top: 20px;
-    margin-bottom: -20px;
+
+.created-link-share {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
+
+.created-vote-link {
+    margin: 20px 0;
+}
+
+.created-vote-link a {
+    font-style: italic;
+    color: #4200bd;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.created-link-share a {
+    color: transparent;
+    margin: 0 5px;
+}
+
+.tg-link {
+    cursor: pointer;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-image: url('images/telegram.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+/* Loading anim */
 
 .loading {
     background-repeat: no-repeat;
@@ -248,45 +268,14 @@ label:hover:before {
 }
 
 .loading.dark {
-    background-image: url('/img/loading_dark.svg');
+    background-image: url('images/loading_dark.svg');
 }
 
 .loading.light {
-    background-image: url('/img/loading_light.svg');
+    background-image: url('images/loading_light.svg');
 }
 
-#created-link-share {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-
-#created-vote-link {
-    margin: 20px 0;
-}
-
-#created-vote-link a {
-    font-style: italic;
-    color: #4200bd;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-#created-link-share a {
-    margin: 0 5px;
-}
-
-.tg-link {
-    cursor: pointer;
-    display: inline-block;
-    width: 32px;
-    height: 32px;
-    background-image: url('/img/telegram.svg');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-}
+/* VOTE CARD */
 
 #vote-card-proposal {
     background-color: #eeeeee;
@@ -297,8 +286,6 @@ label:hover:before {
 #vote-card {
     display: flex;
     flex-direction: row;
-    opacity: 0;
-    display: none;
 }
 
 .vote-card-main {
@@ -316,7 +303,6 @@ label:hover:before {
     flex-direction: column;
     justify-content: center;
     text-align: left;
-    display: none;
 }
 
 .vote-card-side-header {
@@ -372,14 +358,27 @@ label:hover:before {
     background-size: contain;
 }
 
+.vote-card-icon.yes {
+    background-image: url('images/yes.png');
+}
+
+.vote-card-icon.no {
+    background-image: url('images/no.png');
+}
+
+#vote-registration {
+    padding: 5px;
+    margin-top: 20px;
+}
+
+/* VOTE PAGE ALTERNATIVES */
+
 #placeholder {
     height: 200px;
     width: 200px;
 }
 
 #wrong-vote {
-    display: none;
-    opacity: 0;
     font-size: 36px;
     font-weight: bold;
 }
@@ -390,10 +389,4 @@ label:hover:before {
     text-decoration: underline;
     color: #4200bd;
     font-style: italic;
-}
-
-#vote-registration {
-    padding: 5px;
-    margin-top: 20px;
-    display: none;
 }
