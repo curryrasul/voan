@@ -67,7 +67,7 @@ export default function Create() {
     }
 
     let deleteMember = (event) => {
-        setWhitelist(whitelist.filter(item => item !== event.target.dataset.member))
+        setWhitelist(whitelist.filter(item => item !== event.currentTarget.dataset.member))
     }
 
     let createVote = (event) => {
@@ -87,7 +87,7 @@ export default function Create() {
             voting_deadline: moment(votingDeadline).unix() * 1000000000,
         }
         console.log(options)
-        
+
         new_voting(options)
     }
 
