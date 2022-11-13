@@ -3,4 +3,6 @@ neardev/
 Cargo.lock
 **/*.rs.bk
 node_modules/
+relayer/hints
+relayer/host.sh
 temp
