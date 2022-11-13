@@ -5,6 +5,11 @@ Cargo.lock
 node_modules/
 temp
 
+# relayer
+relayer/hints
+relayer/host.sh
+relayer/POST
+
 # front-end
 web-ui/node_modules
 web-ui/.pnp
