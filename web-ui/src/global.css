@@ -1,0 +1,428 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,900;1,100;1,300&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+}
+
+html,
+body,
+main {
+    height: 100%;
+}
+
+.button {
+    background-color: #000000;
+    color: #ffffff;
+    width: 100%;
+    display: block;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+header {
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background-color: #000000;
+    padding: 10px;
+}
+
+.logo {
+    float: left;
+    color: #ffffff;
+    font-size: 36px;
+}
+
+.near-account {
+    float: right;
+    font-size: 36px;
+    color: #ffffff;
+}
+
+.account-info {
+    text-align: right;
+}
+
+.logout {
+    height: 18px;
+    padding: 1px;
+    width: auto;
+    display: inline-block;
+    line-height: 1;
+}
+
+.wrapper {
+    max-width: 1100px;
+    margin: auto;
+}
+
+main {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.form {
+    margin: 25px auto;
+    font-size: 18px;
+    width: 400px;
+    max-width: 100vw;
+    display: block;
+    padding: 10px;
+}
+
+.form input,
+.form textarea {
+    width: 100%;
+    display: block;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: #eeeeee;
+    resize: none;
+}
+
+.form label {
+    width: 100%;
+    display: block;
+    padding: 5px 0;
+    text-align: left;
+}
+
+label {
+    position: relative;
+}
+
+label:before {
+    content: attr(data-hover);
+    visibility: hidden;
+    opacity: 0;
+    width: 140px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 14px;
+    padding: 5px 0;
+    transition: opacity 1s ease-in-out;
+    position: absolute;
+    z-index: 1;
+    bottom: 110%;
+}
+
+label:hover:before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.text-button {
+    font-style: italic;
+    color: #4200bd;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+a {
+    font-size: inherit;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+/* CREATE_VOTE_FORM */
+.create-vote,
+.creating-done {
+    position: relative;
+    width: 600px;
+    max-width: 100vw;
+    border-radius: 15px;
+    background-color: #ffffff;
+    padding: 20px;
+}
+
+.back-button {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.create-vote .form {
+    width: 100%;
+}
+
+.form-line {
+    display: flex;
+}
+
+.col-50 {
+    width: 50% !important;
+}
+
+.col-25 {
+    width: 25% !important;
+}
+
+.form-line>* {
+    margin-left: 5px;
+}
+
+.form-line>*:first-of-type {
+    margin-left: 0px;
+}
+
+.whitelist {
+    padding: 10px 0;
+    background-color: #eeeeee;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    text-align: left;
+}
+
+.whitelist-member {
+    padding: 5px 10px;
+    display: flex;
+    position: relative;
+}
+
+.whitelist-member-name {
+    width: 100%;
+}
+
+.delete-member {
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+.whitelist-member:first-of-type {
+    margin: 0;
+}
+
+input[name="member-name"] {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.add-member {
+    padding: 10px;
+    cursor: pointer;
+}
+
+
+.created-link-share {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.created-vote-link {
+    margin: 20px 0;
+}
+
+.created-vote-link a {
+    font-style: italic;
+    color: #4200bd;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.created-link-share a {
+    color: transparent;
+    margin: 0 5px;
+}
+
+.tg-link {
+    cursor: pointer;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-image: url('images/telegram.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+/* Loading anim */
+
+.loading {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    color: transparent;
+}
+
+.loading.dark {
+    background-image: url('images/loading_dark.svg');
+}
+
+.loading.light {
+    background-image: url('images/loading_light.svg');
+}
+
+/* VOTE CARD */
+
+.vote-card-proposal {
+    background-color: #eeeeee;
+    border-radius: 10px;
+    padding: 25px;
+}
+
+.vote-card {
+    display: flex;
+    flex-direction: row;
+}
+
+.vote-card-main {
+    padding: 20px;
+    width: 700px;
+    max-width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.vote-card-side {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+}
+
+.vote-card-side-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.vote-card-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 auto;
+    width: 600px;
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+
+.vote-card-id {
+    font-size: 2rem;
+}
+
+.vote-card-status {
+    text-align: right;
+}
+
+.vote-card-results {
+    margin: 0 auto;
+    width: 400px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 5px 20px;
+}
+
+.vote-card-votes {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+}
+
+.vote-card-votes.selected[data-answer="0"] {
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
+.vote-card-votes.selected[data-answer="1"] {
+    background-color: rgba(0, 255, 0, 0.2);
+}
+
+.vote-card-count {
+    margin: 5px;
+    display: inline-block;
+}
+
+.vote-card-icon {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.vote-card-icon.yes {
+    background-image: url('images/yes.png');
+}
+
+.vote-card-icon.no {
+    background-image: url('images/no.png');
+}
+
+.vote-registration {
+    padding: 5px;
+    margin-top: 20px;
+}
+
+/* VOTE PAGE ALTERNATIVES */
+
+.placeholder {
+    height: 200px;
+    width: 200px;
+}
+
+.wrong-vote {
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.wrong-vote a {
+    font-weight: normal;
+    font-size: 24px;
+    text-decoration: underline;
+    color: #4200bd;
+    font-style: italic;
+}
+
+.vote-form {
+    width: 400px;
+    max-width: 100vw;
+    margin: 0 auto;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-input-label {
+    display: block;
+    padding: 5px;
+    background-color: #eeeeee;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    cursor: pointer;
+}
+
+.vote-make {
+    padding: 5px;
+    border-radius: 0;
+    margin-top: 5px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
