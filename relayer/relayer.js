@@ -167,6 +167,11 @@ const thresholdVerify = async function (id) {
 
 const requestListener = function (req, res) {
     res.setHeader("Content-Type", "application/json");
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
     if (req.method == 'POST') {
         var body = '';
         req.on('data', function (data) {
