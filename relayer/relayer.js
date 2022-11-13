@@ -6,7 +6,7 @@ const snarkjs = require("snarkjs");
 
 
 const serverConfig = {
-    hostname: '127.0.0.1',
+    hostname: process.argv[4],
     port: 3000
 };
 
@@ -150,9 +150,8 @@ const deadlineVerify = async function (id) {
     const contract = await getContract();
 
     const deadlineResponse = await contract.get_voting_deadline({"id": id});
-    const hrTime = process.hrtime();
     
-    return (hrTime[0] * 10000000000000 + hrTime[1] < deadlineResponse)
+    return (Date.now() * 1000000 < deadlineResponse)
 };
 
 
