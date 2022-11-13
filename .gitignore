@@ -5,4 +5,5 @@ Cargo.lock
 node_modules/
 relayer/hints
 relayer/host.sh
+relayer/POST
 temp
