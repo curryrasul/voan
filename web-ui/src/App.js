@@ -8,6 +8,7 @@ import Home from './Home';
 import Create from './Create';
 import Vote from './Vote';
 import Done from './Done';
+import { ToastContainer } from 'react-toastify'
 
 export default function App() {
 
@@ -15,6 +16,7 @@ export default function App() {
         // use React Fragment, <>, to avoid wrapping elements in unnecessary divs
         <BrowserRouter>
             <Header />
+            <ToastContainer autoClose={3000}/>
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/create" element={<Create />} />
@@ -44,9 +46,9 @@ function Header() {
     const nearAccount = window.walletConnection.isSignedIn() ?
         <div className="account-info">
             <div>{AccountId}</div>
-            <button className="logout" onClick={logout}>LOG OUT</button>
+            <button className="button logout" onClick={logout}>LOG OUT</button>
         </div> :
-        <button onClick={login}>LOG IN</button>;
+        <button className="button" onClick={login}>LOG IN</button>;
     return (
         <header>
             <div className="wrapper">

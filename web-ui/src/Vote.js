@@ -1,10 +1,11 @@
 import 'regenerator-runtime/runtime'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { getVoteData, generateRegistrationParams, getTransactionResult, makeAndDownloadKeyFile, sign_up } from './utils'
+import { getVoteData, generateRegistrationParams, getTransactionResult, makeAndDownloadKeyFile, sendVoteToRelayer, sign_up } from './utils'
 import './global.css'
 import moment from 'moment';
 import Placeholder from './Placeholder';
+import {toast} from 'react-toastify'
 // const hash = require("circomlibjs").mimcsponge.multiHash;
 
 export default function Vote({ match }) {
@@ -15,13 +16,15 @@ export default function Vote({ match }) {
     const [voteStatus, setVoteStatus] = useState(0)
     const [timeLeft, setTimeLeft] = useState({})
     const [buttonLoading, setButtonLoading] = useState(false)
+    const [answer, setAnswer] = useState('')
+    const [file, setFile] = useState({})
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const txhash = urlParams.get("transactionHashes")
         if (txhash !== null) {
-            getTransactionResult(txhash).then((position) => {
-                makeAndDownloadKeyFile(voteID, position)
+            getTransactionResult(txhash).then((key) => {
+                makeAndDownloadKeyFile(voteID, key)
                 window.location.assign(`/vote/${voteID}`)
             })
         }
@@ -56,7 +59,7 @@ export default function Vote({ match }) {
             return
         }
 
-        let add_zeros = (number) => ('0' + number).slice(-2)
+        let add_zeros = (number) => number < 10 ? '0'+number : number
         let refresh_date = (date) => {
             let duration = moment.duration(date.diff(moment()))
             setTimeLeft(`${add_zeros(Math.floor(duration.asHours()))}:${add_zeros(duration.minutes())}:${add_zeros(duration.seconds())}`)
@@ -72,19 +75,73 @@ export default function Vote({ match }) {
 
     let register = () => {
         setButtonLoading(true)
+        console.log('register')
         generateRegistrationParams().then((opts) => {
             window.localStorage.setItem(`voanVote${voteID}Keys`, JSON.stringify({ secret: opts.secret, nullifier: opts.nullifier }))
-            sign_up(voteID, opts.commitment).then((position) => {
-                makeAndDownloadKeyFile(voteID, position)
+            sign_up(voteID, opts.commitment).then((key) => {
+                makeAndDownloadKeyFile(voteID, key)
                 setButtonLoading(false)
+                window.location.assign(`/vote/${voteID}`)
             })
         })
     }
 
+    let chooseVote = (event) => {
+        if (voteStatus === 1) {
+            setAnswer(event.currentTarget.dataset.answer)
+        }
+    }
+
+    let makeVote = () => {
+        setButtonLoading(true)
+        const reader = new FileReader()
+        reader.onload = async (e) => {
+            let opts
+            try{
+                opts = JSON.parse(e.target.result)
+            } catch(err){
+                toast.error('Wrong file. Please choose another!')
+                setButtonLoading(false)
+                return
+            }
+            console.log(opts)
+            if(!opts.hasOwnProperty('key') || !opts.hasOwnProperty('secret') || !opts.hasOwnProperty('nullifier')){
+                toast.error('Wrong file. Please choose another!')
+                setButtonLoading(false)
+                return
+            }
+            sendVoteToRelayer(voteID, opts, answer).then((response) => {
+                setButtonLoading(false)
+                if(response.status === 200){
+                    toast.success('Your vote approved!')
+                    setTimeout(() => window.location.reload(), 3000)
+                } else{
+                    toast.error('Error! ' + response.statusText)
+                    console.log(response.statusText)
+                    setButtonLoading(false)
+                }
+            })
+        };
+        reader.readAsText(file)
+    }
+
+    let fileChange = (event) => {
+        setFile(event.target.files[0])
+    }
+
+
+    let voteForm = voteStatus === 1 && answer !== '' ?
+        <div className="vote-form">
+            <input type='file' id="keyFile" className="file-input" onChange={fileChange}></input>
+            <label htmlFor="keyFile" className="file-input-label" data-hover="Select file with your secret, nullifier and key">{file.name ? file.name : 'Click to select KeyFile'}</label>
+            <button className={"button vote-make dark" + (buttonLoading ? ' loading' : '')} onClick={makeVote} disabled={!file.name || buttonLoading}>Vote</button>
+        </div> :
+        <></>
+
     let voteCardPhase = voteStatusDict[voteStatus]
 
     let registerButton = (voteData.wait_list && voteData.wait_list.includes(window.walletConnection.account().accountId)) ?
-        <button className={"vote-registration dark" + (buttonLoading ? ' loading' : '')} onClick={register} disabled={buttonLoading}>REGISTER</button> : <></>
+        <button className={"button vote-registration dark" + (buttonLoading ? ' loading' : '')} onClick={register} disabled={buttonLoading}>REGISTER</button> : <></>
 
     let voteCardSide = voteStatus === 0 ?
         <div className="vote-card-side">
@@ -109,11 +166,11 @@ export default function Vote({ match }) {
                         </div>
                         <div className="vote-card-proposal">{voteData.proposal}</div>
                         <div className="vote-card-results">
-                            <div className={"vote-card-votes"} data-answer="0">
+                            <div className={"vote-card-votes" + (answer === "0" ? ' selected' : '')} data-answer="0" onClick={chooseVote}>
                                 <div className="vote-card-icon no"></div>
                                 <div className="vote-card-count">{voteData.vote_count - voteData.yes_count}</div>
                             </div>
-                            <div className={"vote-card-votes"} data-answer="1">
+                            <div className={"vote-card-votes" + (answer === "1" ? ' selected' : '')} data-answer="1" onClick={chooseVote}>
                                 <div className="vote-card-count">{voteData.yes_count}</div>
                                 <div className="vote-card-icon yes"></div>
                             </div>
@@ -121,6 +178,7 @@ export default function Vote({ match }) {
                     </div>
                     {voteCardSide}
                 </div>
+                {voteForm}
             </>
 
     return (

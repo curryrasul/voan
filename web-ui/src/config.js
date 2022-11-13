@@ -1,5 +1,5 @@
 const CONTRACT = 'dev-1667755352527-99327939881892'
-export const DOMAIN = 'http://localhost'
+export const DOMAIN = 'http://192.168.43.88:80'
 
 export function getConfig(env) {
     switch (env) {

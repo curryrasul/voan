@@ -1,7 +1,9 @@
 import { connect, Contract, keyStores, WalletConnection, providers } from 'near-api-js'
-import { getConfig } from './config'
+import { DOMAIN, getConfig } from './config'
 import { buildMimcSponge } from 'circomlibjs'
 import { randomBytes } from 'crypto'
+import * as snarkjs from 'snarkjs'
+import axios from 'axios'
 /* global BigInt */
 
 const nearConfig = getConfig('testnet')
@@ -14,7 +16,7 @@ export async function initContract() {
     window.accountId = window.walletConnection.getAccountId()
 
     window.voanContract = await new Contract(window.walletConnection.account(), nearConfig.contractName, {
-        viewMethods: ['get_proposal', 'get_signup_deadline', 'get_voting_deadline', 'get_cur_list', 'nullifiers', 'how_many_pos', 'get_threshold'],
+        viewMethods: ['get_proposal', 'get_signup_deadline', 'get_voting_deadline', 'get_cur_list', 'nullifiers', 'how_many_pos', 'get_threshold', 'siblings', 'root'],
         changeMethods: ['new_voting', 'sign_up'],
     })
 }
@@ -34,11 +36,6 @@ export async function getTransactionResult(txhash) {
     const transaction = await provider.txStatus(txhash, 'unnused');
 
     return providers.getTransactionLastResult(transaction);
-}
-
-export async function new_voting(options) {
-    const voteID = await window.voanContract.new_voting({ callbackUrl: 'http://localhost:3000/done', meta: options.proposal, args: options, gas: 300000000000000 })
-    return voteID
 }
 
 export async function get_proposal(id) {
@@ -76,9 +73,24 @@ export async function get_threshold(id) {
     return threshold
 }
 
+export async function siblings(id, key) {
+    const siblings = await window.voanContract.siblings({ id: id, key: key })
+    return siblings
+}
+
+export async function root(id) {
+    const root = await window.voanContract.root({ id: id })
+    return root
+}
+
+export async function new_voting(options) {
+    const voteID = await window.voanContract.new_voting({ callbackUrl: `${DOMAIN}/done`, meta: options.proposal, args: options, gas: 300000000000000 })
+    return voteID
+}
+
 export async function sign_up(id, commitment) {
-    const position = await window.voanContract.sign_up({ id: id, commitment: commitment }, "300000000000000")
-    return position
+    const key = await window.voanContract.sign_up({ id: id, commitment: commitment }, "300000000000000")
+    return key
 }
 
 export async function getVoteData(id) {
@@ -113,14 +125,14 @@ export async function generateRegistrationParams() {
     }
 }
 
-export function makeAndDownloadKeyFile(voteID, position) {
+export function makeAndDownloadKeyFile(voteID, key) {
     let name = `voanVote${voteID}Keys`
     let opts = JSON.parse(window.localStorage.getItem(name))
     if (!opts) {
         console.log('Can`t find keys in local storage')
         return
     }
-    opts.position = position
+    opts.key = key
     window.localStorage.removeItem(name)
     const url = window.URL.createObjectURL(
         new Blob([JSON.stringify(opts)], {
@@ -131,4 +143,30 @@ export function makeAndDownloadKeyFile(voteID, position) {
     tmpLink.href = url
     tmpLink.setAttribute('download', name)
     tmpLink.click()
+}
+
+export async function sendVoteToRelayer(voteID, options, answer) {
+    const proof_options = {
+        key: options.key,
+        secret: options.secret,
+        siblings: await siblings(voteID, options.key),
+        nullifier: options.nullifier,
+        root: await root(voteID),
+        vote: answer
+    }
+    const proof = await snarkjs.groth16.fullProve(proof_options, `${DOMAIN}/circuits/circuit.wasm`, `${DOMAIN}/circuits/final.zkey`)
+    const relayer_options = {
+        id: "" + voteID,
+        public: proof.publicSignals,
+        proof: [proof.proof]
+    }
+    let axiosConfig = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain',
+            'Access-Control-Allow-Origin': '*'
+        }
+    }
+    let data = JSON.stringify(relayer_options)
+    return await axios.post('//31.172.77.23:3000/', data, axiosConfig)
 }

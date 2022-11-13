@@ -2,6 +2,8 @@ import 'regenerator-runtime/runtime'
 import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import './global.css'
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { new_voting } from './utils'
 
@@ -17,7 +19,9 @@ export default function Create() {
 
     useEffect(() => {
         if (threshold === 0 && whitelist.length !== 0) setThreshold(1)
-        if (threshold > whitelist.length) setThreshold(whitelist.length)
+        if (threshold > whitelist.length) {
+            setThreshold(whitelist.length)
+        }
     }, [threshold, whitelist])
 
     let handleChange = (event) => {
@@ -30,17 +34,24 @@ export default function Create() {
                     setSignupDeadline(event.target.value);
                     if (moment(votingDeadline).isBefore(moment(event.target.value))) {
                         setVotingDeadline(moment(event.target.value).add(1, 'h').format('YYYY-MM-DDTHH:mm'))
+                        toast(`Voting deadline was automaticaly set to 1 hour after sign up`);
                     }
+                } else {
+                    toast(`Sign-up deadline must be after now!`);
                 }
                 break
             case 'voting-deadline':
                 if (moment(event.target.value).isAfter(moment(signupDeadline))) {
                     setVotingDeadline(event.target.value);
+                } else {
+                    toast(`Voting deadline must be after sign-up deadline!`);
                 }
                 break
             case 'threshold':
                 if (event.target.value > 0 && event.target.value <= whitelist.length) {
-                    setThreshold(event.target.value);
+                    setThreshold(+event.target.value);
+                } else{
+                    toast(`Threshold must be positive number <= whitelist length!`);
                 }
                 break
             case 'member-name':
@@ -57,7 +68,12 @@ export default function Create() {
     }
 
     let addMember = () => {
-        if (whitelist.length >= 8 || whitelist.includes(memberName)) {
+        if (whitelist.length >= 8) {
+            toast.error("Whitelist is full!");
+            return
+        }
+        if (whitelist.includes(memberName)){
+            toast.error(`${memberName} is already in whitelist!`);
             return
         }
         setWhitelist(previousWhitelist => {
@@ -72,10 +88,28 @@ export default function Create() {
 
     let createVote = (event) => {
         setButtonLoading(true)
-        if (proposal === '' ||
-            whitelist.length === 0 || whitelist.length > 8 || threshold === 0 || threshold > whitelist.length ||
-            moment(signupDeadline).isBefore(moment()) || moment(votingDeadline).isBefore(moment(signupDeadline))) {
-
+        if (proposal === ''){
+            toast.error(`Proposal must not be empty!`);
+            setButtonLoading(false)
+            return
+        } 
+        if (whitelist.length === 0 || whitelist.length > 8){
+            toast.error(`Whitelist must contain 1 to 8 members!`);
+            setButtonLoading(false)
+            return
+        }
+        if(threshold === 0 || threshold > whitelist.length){
+            toast.error(`Threshold must be positive number <= whitelist length!`);
+            setButtonLoading(false)
+            return
+        }
+        if(moment(signupDeadline).isBefore(moment())){
+            toast.error(`Sign-Up deadline must be in future!`);
+            setButtonLoading(false)
+            return
+        }
+        if(moment(votingDeadline).isBefore(moment(signupDeadline))) {
+            toast.error(`Voting deadline must be after Sign-up deadline!`);
             setButtonLoading(false)
             return
         }
@@ -87,13 +121,14 @@ export default function Create() {
             voting_deadline: moment(votingDeadline).unix() * 1000000000,
         }
         console.log(options)
-
-        new_voting(options)
+        new_voting(options).then((res) => {
+            window.location.assign(`/done?voteID=${res}&signMeta=${proposal}`)
+        })
     }
 
     const createButton = window.walletConnection.isSignedIn() ?
-        <button className={"dark" + (buttonLoading ? ' loading' : '')} onClick={createVote} disabled={buttonLoading}>Create vote</button> :
-        <button className="dark" disabled>You need to login first</button>
+        <button className={"button dark" + (buttonLoading ? ' loading' : '')} onClick={createVote} disabled={buttonLoading}>Create vote</button> :
+        <button className="button dark" disabled>You need to login first</button>
     return (
         <main className="wrapper">
             <div className="create-vote">

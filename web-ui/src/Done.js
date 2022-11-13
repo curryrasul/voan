@@ -14,6 +14,7 @@ export default function Done() {
         const urlParams = new URLSearchParams(window.location.search);
         const txhash = urlParams.get("transactionHashes")
         const signMeta = urlParams.get('signMeta')
+        const voteIDParam = urlParams.get('voteID')
 
         if (signMeta !== null) {
             setProposal(signMeta)
@@ -23,6 +24,10 @@ export default function Done() {
             getTransactionResult(txhash).then((result) => {
                 setVoteID(result)
             })
+        } else if (voteIDParam !== null) {
+            setVoteID(voteIDParam)
+        } else {
+            window.location.assign('/')
         }
     }, [])
 
