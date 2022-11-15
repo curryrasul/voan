@@ -45,7 +45,7 @@ export default function Vote({ match }) {
                 setVoteStatus(0)
                 return
             }
-            if (moment().isBefore(moment.unix(voteData.voting_deadline / 1000000000)) && voteData.yes_count < voteData.threshold) {
+            if (moment().isBefore(moment.unix(voteData.voting_deadline / 1000000000)) && voteData.yes_count < voteData.threshold && voteData.vote_count < voteData.num_participants) {
                 setVoteStatus(1)
                 return
             }
