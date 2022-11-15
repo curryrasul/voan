@@ -1,0 +1,259 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>VOAN</title>
+        <meta name="robots" content="noindex" />
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="voan.html"><strong aria-hidden="true">1.</strong> VOAN</a></li><li class="chapter-item expanded "><a href="how-it-works.html"><strong aria-hidden="true">2.</strong> How it works</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> How to use</div></li><li class="chapter-item expanded "><a href="useful-links.html"><strong aria-hidden="true">4.</strong> Useful links</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">VOAN</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 align="center">VoAn - ANonymous VOting platform on NEAR</h1>
+<!-- <p align="center">
+    <img src="./images/voan-logo.jpeg" width="150">
+</p> -->
+<p align="center">
+    <a href="aaa">
+        <i>
+            TRY THE APP HERE
+        </i>
+    </a>
+</p>
+<p>One of the key requirements for votings is <strong>privacy</strong>. There is no <em>privacy-by-default</em> on NEAR Protocol. The main motivation comes from experience of participating in DAOs: you cannot vote against the proposal, because you may offend someone. Anonymity would be a great option.</p>
+<p align="center"><i><b>Privacy is normal!</b></i></p>
+<hr />
+<p>On this web-site you can find info on:</p>
+<ul>
+<li><a href="./how-it-works.html">How <strong>voan</strong> works</a></li>
+<li><a href="./how-to-use.html">How to use <strong>voan</strong></a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="how-it-works"><a class="header" href="#how-it-works">How it works</a></h1>
+<h2 id="abstract"><a class="header" href="#abstract">Abstract</a></h2>
+<p>As everything on blockchains is visible to others (f.e. you cannot send tokens to your friends privately) it is impossible to build apps with privacy on modern blockchains (NEAR Protocol, Ethereum) without the help of other primitives. The thing that helps us to build such apps is <em>zk-cryptography</em>: it allows us to prove that we know some information, without revealing this information, for example: for some publicly-known number \(c\), I can prove that I know factors \(a\) and \(b\) (without revealing them), such that \(a * b = c\). Thus, we can prove that we belong to a certain set without revealing who we are (that is also called proof of set membership) ... and that actually the key mechanism of voting. Let's divide the vote into several stages:</p>
+<ol>
+<li>Voting creation/initialization</li>
+<li>Voting itself</li>
+</ol>
+<p>In the first step, host of a voting sets the rules: proposal, deadlines, jury list/whitelist, etc. The main thing here is the whitelist. This whitelist contains public keys of participants of a voting. </p>
+<p>In the second step participants can vote, and they can do that by proving the knowledge of a private key that matches their public key and that this exact public key is in the whitelist. 
+By that participant didn't reveal himself and really was able to prove that he has the right to vote (if a person were not on the whitelist, he would not be able to create such evidence).</p>
+<p>There are few problems here and some you might noticed yourself:</p>
+<ol>
+<li>Participant can vote more than once</li>
+<li>Participant will reveal himself if he calls the transaction from his publicly known address/account</li>
+</ol>
+<p>Let's discuss second problem first. As already said, if a participant calls vote-transaction from his address, he reveals himself. One of the solutions that can come to mind to create new account and vote from it. But in blockchains you have to pay a GAS fee. So, you need to top up the balance of a new account, but if you do that it will be easy to establish a connection between a publicly known account and a new one. Seems impossible now ... But, actually we can delegate the transaction call to a separate person - <em>relayer</em>, so he'll pay for our transaction and we don't even need blockchain interaction (relayer will do it for us). There are few problems with that too, but they are solvable:</p>
+<ul>
+<li>Relayer can frontrun (change our vote value) - this can be solved if the proof depends on the vote value (so if he changes it, the proof'll be invalid)</li>
+<li>Relayer can censor votes - this can be solved if there are many relayers</li>
+<li>Relayer need money/other motivation to work - this can be solved with tokenomics or if host pays for that</li>
+</ul>
+<p>Before we move to the first problem (vote more than once) it's important to say that the use of real blockchain accounts (namely, the creation of proofs of ownership of a private key) is not ZK-Friendly operation (you as a client will create such a proof for a very long time), that's why we need to think about other way to do that ... and we can do that by adding additional stage - <strong>registration</strong>. Here we'll randomly generate secret number and send the <em>commitment</em> (hash of secret number) to the smart-contract, so the <em>commitment</em> will mimic the public key; and of course - we can make proving the knowledge of the preimage of the hash-function ZK-Friendly.</p>
+<p>Now, let's discuss how to solve the first problem ... the solution is really simple: at the registration stage, instead of generating one number (\(secret\)), you can generate another one (let's call it \(nullifier)\) ​​and \(commitment = Hash(secret, nullifier)\). Then, at the voting stage, when we make a ZK proof, we will reveal the \(nullifier\). This way we won't declassify ourselves, but we won't be able to vote twice with the same nullifier either.</p>
+<h3 id="voting-creationinitialization"><a class="header" href="#voting-creationinitialization">Voting creation/initialization</a></h3>
+<p align="center">
+    <img src="./images/creating.png" height="450">
+</p>
+<p align="center">
+    <i>Voting creation scheme</i>
+</p>
+<p>Done by host as described earlier.</p>
+<h3 id="registration"><a class="header" href="#registration">Registration</a></h3>
+<p align="center">
+    <img src="./images/registration.png" height="450">
+</p>
+<p align="center">
+    <i>Registration scheme</i>
+</p>
+<p>People from whitelist can sign up for voting by submitting a commitment = \(Hash(secret, nullifier)\).</p>
+<h3 id="voting"><a class="header" href="#voting">Voting</a></h3>
+<p align="center">
+    <img src="./images/voting.png" height="450">
+</p>
+<p align="center">
+    <i>Voting scheme</i>
+</p>
+<p>Participants choose a vote option (yes or no) 
+and vote through the relayer, by creating a ZK proof (by passing their secret) that they are one of the registered members and sending it to him.</p>
+<h2 id="tech-stack"><a class="header" href="#tech-stack">Tech stack</a></h2>
+<p>Programming languages: </p>
+<ul>
+<li>Rust - <a href="./contract/">Smart-contract</a>, <a href="./tests/">tests</a></li>
+<li>Circom - <a href="./circuits/">zkSNARK circuits</a></li>
+<li>NodeJS - <a href="./relayer/">Relayer</a></li>
+<li>JS | React | SnarkJS - <a href="./web-ui/">WebUI</a> + ZK proofs generation</li>
+</ul>
+<p>Primitives:</p>
+<ul>
+<li>Groth16 proving scheme - used for a zkp-side (arkworks-rs/groth16 + electron-labs/verifier &amp; SnarkJS + Circom)</li>
+<li><a href="./contract/src/merkle_tree.rs">Merkle Tree</a> + <a href="https://github.com/tzilkha/mimc-sponge-rs">MiMCSponge</a> (fully implemented by our team)</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="useful-links"><a class="header" href="#useful-links">Useful links</a></h1>
+<ul>
+<li><a href="">VoAn App</a></li>
+<li><a href="https://github.com/curryrasul/voan">GitHub Repo</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            MathJax.Hub.Register.StartupHook('End', function() {
+                window.setTimeout(window.print, 100);
+            });
+        });
+        </script>
+    </body>
+</html>
