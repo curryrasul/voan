@@ -72,7 +72,7 @@ People from whitelist can sign up for voting by submitting a `commitment = Hash(
     <img src="./images/voting.png" height="300">
 </p>
 <p align="center">
-    <i>Voting creation scheme</i>
+    <i>Voting scheme</i>
 </p>
 
 Participants choose a vote option (yes or no) 
