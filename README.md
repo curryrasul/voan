@@ -10,6 +10,8 @@ ___
 
 One of the key requirements for votings is **privacy**. There is no *privacy-by-default* on NEAR Protocol. The main motivation comes from experience of participating in DAOs: you cannot vote against the proposal, because you may offend someone. Anonymity would be a great option.
 
+<p align="center"><i>Privacy is normal!</i></p>
+
 ---
 
 <h2 align="center">How it works</h2>
@@ -40,20 +42,41 @@ Before we move to the first problem (vote more than once) it's important to say 
 
 Now, let's discuss how to solve the first problem ... the solution is really simple: at the registration stage, instead of generating one number (`secret`), you can generate another one (let's call it `nullifier`) ​​and `commitment = Hash(secret, nullifier)`. Then, at the voting stage, when we make a ZK proof, we will reveal the `nullifier`. This way we won't declassify ourselves, but we won't be able to vote twice with the same nullifier either.
 
-So, let's go over the whole scheme again:
+**So, let's go over the whole process again**:
 
-1. Voting creation/initialization:
+**Voting creation/initialization**:
+
+<p align="center">
+    <img src="./images/creating.png" height="200">
+</p>
+<p align="center">
+    <i>Voting creation scheme</i>
+</p>
 
 Done by host as described earlier.
 
-2. Registration
+**Registration**:
+
+<p align="center">
+    <img src="./images/registration.png" height="200">
+</p>
+<p align="center">
+    <i>Registration scheme</i>
+</p>
 
 People from whitelist can sign up for voting by submitting a `commitment = Hash(secret, nullifier)`.
 
-3. Voting
+**Voting**:
+
+<p align="center">
+    <img src="./images/voting.png" height="200">
+</p>
+<p align="center">
+    <i>Voting creation scheme</i>
+</p>
 
 Participants choose a vote option (yes or no) 
-and vote through the relayer, by creating a ZK proof that they are one of the registered members and sending it to him.
+and vote through the relayer, by creating a ZK proof (by passing their secret) that they are one of the registered members and sending it to him.
 
 ### Tech stack
 Programming languages: 
