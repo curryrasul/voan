@@ -55,17 +55,13 @@ People from whitelist can sign up for voting by submitting a `commitment = Hash(
 Participants choose a vote option (yes or no) 
 and vote through the relayer, by creating a ZK proof that they are one of the registered members and sending it to him.
 
-### Tech explanation
-
-Bla-bla-bla
-
 ### Tech stack
 Programming languages: 
-* Rust - Smart-contract, tests
-* JS | React - WebUI
-* NodeJS - Relayer
-* Circom - zkSNARK circuits
+* Rust - [Smart-contract](./contract/), [tests](./tests/)
+* Circom - [zkSNARK circuits](./circuits/)
+* NodeJS - [Relayer](./relayer/)
+* JS | React | SnarkJS - [WebUI](./web-ui/) + ZK proofs generation
 
 Primitives:
-* Groth16 - used for a zkp-side (arkworks-rs/groth16 + electron-labs/verifier & SnarkJS + Circom)
-* Merkle Tree + MiMCSponge (fully implemented by our team)
+* Groth16 proving scheme - used for a zkp-side (arkworks-rs/groth16 + electron-labs/verifier & SnarkJS + Circom)
+* [Merkle Tree](./contract/src/merkle_tree.rs) + [MiMCSponge](https://github.com/tzilkha/mimc-sponge-rs) (fully implemented by our team)
