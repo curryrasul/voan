@@ -120,12 +120,18 @@ export default function Vote({ match }) {
                     console.log(response.statusText)
                     setButtonLoading(false)
                 }
+            }, (error) => {
+                toast.error(error.message + "Try another file.")
+                setButtonLoading(false)
             })
         };
         reader.readAsText(file)
     }
 
     let fileChange = (event) => {
+        if(event.target.files.length === 0){
+            return
+        }
         setFile(event.target.files[0])
     }
 
