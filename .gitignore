@@ -8,7 +8,6 @@ temp
 # relayer
 relayer/hints
 relayer/host.sh
-relayer/POST
 
 # front-end
 web-ui/node_modules
