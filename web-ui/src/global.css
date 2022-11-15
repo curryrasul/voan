@@ -34,6 +34,23 @@ header {
     padding: 10px;
 }
 
+footer {
+    z-index: 10;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: transparent;
+    padding: 10px;
+}
+
+.icons-license {
+    text-align: right;
+    padding: 5px;
+    float: right;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 12px;
+}
+
 .logo {
     float: left;
     color: #ffffff;
@@ -155,10 +172,11 @@ a {
 }
 
 .back-button {
+    font-size: 18px;
+    color: #aaaaaa;
     position: absolute;
-    top: 25px;
-    left: 25px;
-    line-height: 1;
+    top: 20px;
+    left: 20px;
     cursor: pointer;
 }
 
@@ -340,6 +358,8 @@ input[name="member-name"] {
 
 .vote-card-votes {
     display: flex;
+    border-radius: 5px;
+    padding: 0 5px;
     flex-direction: row;
     align-items: center;
     cursor: pointer;
@@ -359,20 +379,25 @@ input[name="member-name"] {
 }
 
 .vote-card-icon {
-    display: inline-block;
-    width: 32px;
-    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    width: 25px;
+    height: 25px;
+    color: #ffffff;
+    line-height: 1;
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
 }
 
 .vote-card-icon.yes {
-    background-image: url('images/yes.png');
+    background-color: #00bd00;
 }
 
 .vote-card-icon.no {
-    background-image: url('images/no.png');
+    background-color: #ff0000;
 }
 
 .vote-registration {

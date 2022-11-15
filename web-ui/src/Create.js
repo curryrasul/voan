@@ -50,7 +50,7 @@ export default function Create() {
             case 'threshold':
                 if (event.target.value > 0 && event.target.value <= whitelist.length) {
                     setThreshold(+event.target.value);
-                } else{
+                } else {
                     toast(`Threshold must be positive number <= whitelist length!`);
                 }
                 break
@@ -72,7 +72,7 @@ export default function Create() {
             toast.error("Whitelist is full!");
             return
         }
-        if (whitelist.includes(memberName)){
+        if (whitelist.includes(memberName)) {
             toast.error(`${memberName} is already in whitelist!`);
             return
         }
@@ -88,27 +88,27 @@ export default function Create() {
 
     let createVote = (event) => {
         setButtonLoading(true)
-        if (proposal === ''){
+        if (proposal === '') {
             toast.error(`Proposal must not be empty!`);
             setButtonLoading(false)
             return
-        } 
-        if (whitelist.length === 0 || whitelist.length > 8){
+        }
+        if (whitelist.length === 0 || whitelist.length > 8) {
             toast.error(`Whitelist must contain 1 to 8 members!`);
             setButtonLoading(false)
             return
         }
-        if(threshold === 0 || threshold > whitelist.length){
+        if (threshold === 0 || threshold > whitelist.length) {
             toast.error(`Threshold must be positive number <= whitelist length!`);
             setButtonLoading(false)
             return
         }
-        if(moment(signupDeadline).isBefore(moment())){
+        if (moment(signupDeadline).isBefore(moment())) {
             toast.error(`Sign-Up deadline must be in future!`);
             setButtonLoading(false)
             return
         }
-        if(moment(votingDeadline).isBefore(moment(signupDeadline))) {
+        if (moment(votingDeadline).isBefore(moment(signupDeadline))) {
             toast.error(`Voting deadline must be after Sign-up deadline!`);
             setButtonLoading(false)
             return
@@ -132,7 +132,7 @@ export default function Create() {
     return (
         <main className="wrapper">
             <div className="create-vote">
-                <a className="back-button" href="/">{'◀'}</a>
+                <a className="back-button" href="/">❮ Back</a>
                 <h2>Create your own vote</h2>
                 <div className="form">
                     <label data-hover="Proposal of voting">Proposal</label>
