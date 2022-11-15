@@ -47,7 +47,7 @@ Now, let's discuss how to solve the first problem ... the solution is really sim
 **Voting creation/initialization**:
 
 <p align="center">
-    <img src="./images/creating.png" height="200">
+    <img src="./images/creating.png" height="300">
 </p>
 <p align="center">
     <i>Voting creation scheme</i>
@@ -58,7 +58,7 @@ Done by host as described earlier.
 **Registration**:
 
 <p align="center">
-    <img src="./images/registration.png" height="200">
+    <img src="./images/registration.png" height="300">
 </p>
 <p align="center">
     <i>Registration scheme</i>
@@ -69,7 +69,7 @@ People from whitelist can sign up for voting by submitting a `commitment = Hash(
 **Voting**:
 
 <p align="center">
-    <img src="./images/voting.png" height="200">
+    <img src="./images/voting.png" height="300">
 </p>
 <p align="center">
     <i>Voting creation scheme</i>
