@@ -214,4 +214,13 @@ impl Contract {
     pub fn get_cur_list(&self, id: ID) -> HashSet<AccountId> {
         self.votings.get(&id).expect(ID_ERR).voters_whitelist
     }
+
+    /// View function, that returns number of participants
+    pub fn get_num_participants(&self, id: ID) -> usize {
+        self.merkle_tree(id)
+            .into_iter()
+            .skip(7)
+            .filter(|s| s != "0x0000000000000000000000000000000000000000000000000000000000000000")
+            .count()
+    }
 }
