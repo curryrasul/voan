@@ -2,13 +2,13 @@
 <p align="center">
     <img src="./images/voan-logo.jpeg" width="150">
 </p>
-<h4 align="center">ANonymous VOting on NEAR Protocol</h4>
+<h4 align="center">ANonymous VOtings platform on NEAR Protocol</h4>
 
 ___
 
 <h2 align="center">Motivation</h2>
 
-One of the key requirements for votings is **privacy**. Main motivation comes from experience of participating in DAO's: you cannot vote against the proposal, because you can offend someone. Anonymity would be a great option.
+One of the key requirements for votings is **privacy**. There is no *privacy-by-default* on NEAR Protocol. The main motivation comes from experience of participating in DAOs: you cannot vote against the proposal, because you may offend someone. Anonymity would be a great option.
 
 ---
 
@@ -30,14 +30,34 @@ There are few problems here and some you might noticed yourself:
 1. Participant can vote more than once
 2. Participant will reveal himself if he calls the transaction from his publicly known address/account
 
-Let's discuss second problem first. As already said, if a participant calls vote-transaction from his address, he reveals himself. One of the solutions that can come to mind to create new account and vote from it. But in blockchains you have to pay a GAS fee. So, you need to top up the balance of a new account, but if you do that it will be easy to establish a connection between a publicly known account and a new one. Seems impossible now ... But, actually we can delegate the transaction call to a separate person - *relayer*. So, we'll create proof that 
+Let's discuss second problem first. As already said, if a participant calls vote-transaction from his address, he reveals himself. One of the solutions that can come to mind to create new account and vote from it. But in blockchains you have to pay a GAS fee. So, you need to top up the balance of a new account, but if you do that it will be easy to establish a connection between a publicly known account and a new one. Seems impossible now ... But, actually we can delegate the transaction call to a separate person - *relayer*, so he'll pay for our transaction and we don't even need blockchain interaction (relayer will do it for us). There are few problems with that too, but they are solvable:
 
+* Relayer can frontrun (change our vote value) - this can be solved if the proof depends on the vote value (so if he changes it, the proof'll be invalid)
+* Relayer can censor votes - this can be solved if there are many relayers
+* Relayer need money/other motivation to work - this can be solved with tokenomics or if host pays for that
+
+Before we move to the first problem (vote more than once) it's important to say that the use of real blockchain accounts (namely, the creation of proofs of ownership of a private key) is not ZK-Friendly operation (you as a client will create such a proof for a very long time), that's why we need to think about other way to do that ... and we can do that by adding additional stage - **registration**. Here we'll randomly generate secret number and send the *commitment* (hash of secret number) to the smart-contract, so the *commitment* will mimic the public key; and of course - we can make proving the knowledge of the preimage of the hash-function ZK-Friendly.
+
+Now, let's discuss how to solve the first problem ... the solution is really simple: at the registration stage, instead of generating one number (`secret`), you can generate another one (let's call it `nullifier`) ​​and `commitment = Hash(secret, nullifier)`. Then, at the voting stage, when we make a ZK proof, we will reveal the `nullifier`. This way we won't declassify ourselves, but we won't be able to vote twice with the same nullifier either.
+
+So, let's go over the whole scheme again:
+
+1. Voting creation/initialization:
+
+Done by host as described earlier.
+
+2. Registration
+
+People from whitelist can sign up for voting by submitting a `commitment = Hash(secret, nullifier)`.
+
+3. Voting
+
+Participants choose a vote option (yes or no) 
+and vote through the relayer, by creating a ZK proof that they are one of the registered members and sending it to him.
 
 ### Tech explanation
-The protocol consists of three parts:
-* Smart-contract
-* Client-side app
-* Relayer
+
+Bla-bla-bla
 
 ### Tech stack
 Programming languages: 
@@ -49,15 +69,3 @@ Programming languages:
 Primitives:
 * Groth16 - used for a zkp-side (arkworks-rs/groth16 + electron-labs/verifier & SnarkJS + Circom)
 * Merkle Tree + MiMCSponge (fully implemented by our team)
-
-**Smart-contract**
-
-Smart-contract is implemented with Rust. 
-
-**Client app**
-
-Client app is implemented with JS.
-
-**Relayer**
-
-Relayer is implemented with NodeJS.
