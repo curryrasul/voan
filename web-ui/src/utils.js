@@ -16,7 +16,7 @@ export async function initContract() {
     window.accountId = window.walletConnection.getAccountId()
 
     window.voanContract = await new Contract(window.walletConnection.account(), nearConfig.contractName, {
-        viewMethods: ['get_proposal', 'get_signup_deadline', 'get_voting_deadline', 'get_cur_list', 'nullifiers', 'how_many_pos', 'get_threshold', 'siblings', 'root'],
+        viewMethods: ['get_proposal', 'get_signup_deadline', 'get_voting_deadline', 'get_cur_list', 'get_num_participants', 'nullifiers', 'how_many_pos', 'get_threshold', 'siblings', 'root'],
         changeMethods: ['new_voting', 'sign_up'],
     })
 }
@@ -56,6 +56,11 @@ export async function get_voting_deadline(id) {
 export async function get_cur_list(id) {
     const cur_list = await window.voanContract.get_cur_list({ id: id })
     return cur_list
+}
+
+export async function get_num_participants(id) {
+    const num_participants = await window.voanContract.get_num_participants({ id: id })
+    return num_participants
 }
 
 export async function get_vote_count(id) {
@@ -99,6 +104,7 @@ export async function getVoteData(id) {
         signup_deadline: await get_signup_deadline(id),
         voting_deadline: await get_voting_deadline(id),
         threshold: await get_threshold(id),
+        num_participants: await get_num_participants(id),
         yes_count: await get_yes_count(id),
         vote_count: await get_vote_count(id),
         wait_list: await get_cur_list(id)

@@ -1,7 +1,7 @@
 import 'regenerator-runtime/runtime'
 import React from 'react'
 import './global.css'
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
 
 export default function Home() {
     const [voteID, setVoteID] = React.useState('')
@@ -13,7 +13,7 @@ export default function Home() {
     }
 
     let goToVote = () => {
-        if (voteID === ''){
+        if (voteID === '') {
             toast.error('Enter voteID first')
             return
         }

@@ -5,7 +5,7 @@ import { getVoteData, generateRegistrationParams, getTransactionResult, makeAndD
 import './global.css'
 import moment from 'moment';
 import Placeholder from './Placeholder';
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
 // const hash = require("circomlibjs").mimcsponge.multiHash;
 
 export default function Vote({ match }) {
@@ -45,7 +45,7 @@ export default function Vote({ match }) {
                 setVoteStatus(0)
                 return
             }
-            if (moment().isBefore(moment.unix(voteData.voting_deadline / 1000000000)) && voteData.yes_count < voteData.threshold) {
+            if (moment().isBefore(moment.unix(voteData.voting_deadline / 1000000000)) && voteData.yes_count < voteData.threshold && voteData.vote_count < voteData.num_participants) {
                 setVoteStatus(1)
                 return
             }
@@ -59,7 +59,7 @@ export default function Vote({ match }) {
             return
         }
 
-        let add_zeros = (number) => number < 10 ? '0'+number : number
+        let add_zeros = (number) => number < 10 ? '0' + number : number
         let refresh_date = (date) => {
             let duration = moment.duration(date.diff(moment()))
             setTimeLeft(`${add_zeros(Math.floor(duration.asHours()))}:${add_zeros(duration.minutes())}:${add_zeros(duration.seconds())}`)
@@ -97,35 +97,41 @@ export default function Vote({ match }) {
         const reader = new FileReader()
         reader.onload = async (e) => {
             let opts
-            try{
+            try {
                 opts = JSON.parse(e.target.result)
-            } catch(err){
+            } catch (err) {
                 toast.error('Wrong file. Please choose another!')
                 setButtonLoading(false)
                 return
             }
             console.log(opts)
-            if(!opts.hasOwnProperty('key') || !opts.hasOwnProperty('secret') || !opts.hasOwnProperty('nullifier')){
+            if (!opts.hasOwnProperty('key') || !opts.hasOwnProperty('secret') || !opts.hasOwnProperty('nullifier')) {
                 toast.error('Wrong file. Please choose another!')
                 setButtonLoading(false)
                 return
             }
             sendVoteToRelayer(voteID, opts, answer).then((response) => {
                 setButtonLoading(false)
-                if(response.status === 200){
+                if (response.status === 200) {
                     toast.success('Your vote approved!')
                     setTimeout(() => window.location.reload(), 3000)
-                } else{
+                } else {
                     toast.error('Error! ' + response.statusText)
                     console.log(response.statusText)
                     setButtonLoading(false)
                 }
+            }, (error) => {
+                toast.error(error.message + "Try another file.")
+                setButtonLoading(false)
             })
         };
         reader.readAsText(file)
     }
 
     let fileChange = (event) => {
+        if (event.target.files.length === 0) {
+            return
+        }
         setFile(event.target.files[0])
     }
 
@@ -167,12 +173,12 @@ export default function Vote({ match }) {
                         <div className="vote-card-proposal">{voteData.proposal}</div>
                         <div className="vote-card-results">
                             <div className={"vote-card-votes" + (answer === "0" ? ' selected' : '')} data-answer="0" onClick={chooseVote}>
-                                <div className="vote-card-icon no"></div>
+                                <div className="vote-card-icon no">✖</div>
                                 <div className="vote-card-count">{voteData.vote_count - voteData.yes_count}</div>
                             </div>
                             <div className={"vote-card-votes" + (answer === "1" ? ' selected' : '')} data-answer="1" onClick={chooseVote}>
                                 <div className="vote-card-count">{voteData.yes_count}</div>
-                                <div className="vote-card-icon yes"></div>
+                                <div className="vote-card-icon yes">✔</div>
                             </div>
                         </div>
                     </div>

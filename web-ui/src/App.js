@@ -16,13 +16,14 @@ export default function App() {
         // use React Fragment, <>, to avoid wrapping elements in unnecessary divs
         <BrowserRouter>
             <Header />
-            <ToastContainer autoClose={3000}/>
+            <ToastContainer autoClose={3000} />
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/create" element={<Create />} />
                 <Route path="/done" element={<Done />} />
                 <Route path="/vote/:id" element={<Vote />} />
             </Routes>
+            <Footer />
         </BrowserRouter>
     )
 
@@ -58,5 +59,17 @@ function Header() {
                 </div>
             </div>
         </header>
+    )
+}
+
+function Footer() {
+    return (
+        <footer>
+            <div className="wrapper">
+                <div className="icons-license">
+                    Loading icons from: <a href="https://loading.io/">loading.io</a>
+                </div>
+            </div>
+        </footer>
     )
 }

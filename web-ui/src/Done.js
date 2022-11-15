@@ -37,7 +37,7 @@ export default function Done() {
     let content = voteID === -1 ?
         <Placeholder /> :
         <div className="creating-done">
-            <a className="back-button" href="/">{'◀'}</a>
+            <a className="back-button" href="/">❮ Back</a>
             <h2>Vote is created</h2>
             <div className="form">
                 <div>Your vote is created with ID #{voteID}.</div>
