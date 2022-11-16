@@ -1,8 +1,8 @@
 # Roadmap
 
-1. Reimplement Merkle Tree (make it sparse and optimal) and refactor smart-contract
+1. Reimplement Merkle Tree (make it sparse/optimal) and refactor smart-contract
 2. Reimplement Groth16 on-chain verification with NEAR Core's bn254 precompiles
-3. Recompile circuits (add support for bigger merkle trees)
+3. Recompile circuits (add support for bigger Merkle trees)
 4. Partnership with AstroDAO or building our own platform with tokenomics & rewards for relayers
 5. Web-site design & refactoring
 6. Beta version launch
