@@ -161,7 +161,7 @@ By that participant didn't reveal himself and really was able to prove that he h
 <p>Now, let's discuss how to solve the first problem ... the solution is really simple: at the registration stage, instead of generating one number (\(secret\)), you can generate another one (let's call it \(nullifier)\) ​​and \(commitment = Hash(secret, nullifier)\). Then, at the voting stage, when we make a ZK proof, we will reveal the \(nullifier\). This way we won't declassify ourselves, but we won't be able to vote twice with the same nullifier either.</p>
 <h3 id="voting-creationinitialization"><a class="header" href="#voting-creationinitialization">Voting creation/initialization</a></h3>
 <p align="center">
-    <img src="./images/creating.png" height="450">
+    <img src="./images/creating.png" width="650">
 </p>
 <p align="center">
     <i>Voting creation scheme</i>
@@ -169,7 +169,7 @@ By that participant didn't reveal himself and really was able to prove that he h
 <p>Done by host as described earlier.</p>
 <h3 id="registration"><a class="header" href="#registration">Registration</a></h3>
 <p align="center">
-    <img src="./images/registration.png" height="450">
+    <img src="./images/registration.png" width="650">
 </p>
 <p align="center">
     <i>Registration scheme</i>
@@ -177,7 +177,7 @@ By that participant didn't reveal himself and really was able to prove that he h
 <p>People from whitelist can sign up for voting by submitting a commitment = \(Hash(secret, nullifier)\).</p>
 <h3 id="voting"><a class="header" href="#voting">Voting</a></h3>
 <p align="center">
-    <img src="./images/voting.png" height="450">
+    <img src="./images/voting.png" width="650">
 </p>
 <p align="center">
     <i>Voting scheme</i>
