@@ -12,12 +12,10 @@ jobs:
       - uses: jontze/action-mdbook@v1
         with:
           token: ${{secrets.GITHUB_TOKEN}}
-          # Optional Plugins have to be enabled
           use-linkcheck: true
           use-toc: true
           use-opengh: true
-      - run: cd gh-pages && mdbook build
-      - run: cp -f ./src/images/favicon.jpeg ./book/
+      - run: cd gh-pages && mdbook build && cp -f ./src/images/favicon.jpeg ./book/
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
