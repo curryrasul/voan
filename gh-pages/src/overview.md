@@ -4,4 +4,4 @@ VoAn is a platform for creating anonymous votings. The project was created for [
 
 To learn how to use it check [how to use](./how-to-use.md) section. To learn how it works check [how it works](./how-it-works.md) section.
 
-*Smart-contract is running on v1.voan.testnet*
+*Smart-contract is running on [v1.voan.testnet](https://explorer.testnet.near.org/accounts/v1.voan.testnet)*
