@@ -78,7 +78,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="voan.html"><strong aria-hidden="true">1.</strong> VOAN</a></li><li class="chapter-item expanded "><a href="how-it-works.html"><strong aria-hidden="true">2.</strong> How it works</a></li><li class="chapter-item expanded "><a href="how-to-use.html"><strong aria-hidden="true">3.</strong> How to use</a></li><li class="chapter-item expanded "><a href="roadmap.html"><strong aria-hidden="true">4.</strong> Roadmap</a></li><li class="chapter-item expanded "><a href="useful-links.html"><strong aria-hidden="true">5.</strong> Useful links</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="voan.html"><strong aria-hidden="true">1.</strong> VOAN</a></li><li class="chapter-item expanded "><a href="overview.html"><strong aria-hidden="true">2.</strong> Overview</a></li><li class="chapter-item expanded "><a href="how-it-works.html"><strong aria-hidden="true">3.</strong> How it works</a></li><li class="chapter-item expanded "><a href="how-to-use.html"><strong aria-hidden="true">4.</strong> How to use</a></li><li class="chapter-item expanded "><a href="roadmap.html"><strong aria-hidden="true">5.</strong> Roadmap</a></li><li class="chapter-item expanded "><a href="useful-links.html"><strong aria-hidden="true">6.</strong> Useful links</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -156,6 +156,10 @@
 <li><a href="./how-it-works.html">How <strong>voan</strong> works</a></li>
 <li><a href="./how-to-use.html">How to use <strong>voan</strong></a></li>
 </ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="overview"><a class="header" href="#overview">Overview</a></h1>
+<p>VoAn is a platform for creating anonymous votings. The project was created for <a href="https://metabuild.devpost.com/">Metabuild III Hackathon</a>. Currently supports 8 participants maximum.</p>
+<p>To learn how to use it check <a href="./how-to-use.html">how to use</a> section. To learn how it works check <a href="./how-it-works.html">how it works</a> section.</p>
+<p><em>Smart-contract is running on v1.voan.testnet</em></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="how-it-works"><a class="header" href="#how-it-works">How it works</a></h1>
 <h2 id="abstract"><a class="header" href="#abstract">Abstract</a></h2>
 <p>As everything on blockchains is visible to others (f.e. you cannot send tokens to your friends privately) it is impossible to build apps with privacy on modern blockchains (NEAR Protocol, Ethereum) without the help of other primitives. The thing that helps us to build such apps is <em>zk-cryptography</em>: it allows us to prove that we know some information, without revealing this information, for example: for some publicly-known number \(c\), I can prove that I know factors \(a\) and \(b\) (without revealing them), such that \(a * b = c\). Thus, we can prove that we belong to a certain set without revealing who we are (that is also called proof of set membership) ... and that actually the key mechanism of voting. Let's divide the vote into several stages:</p>
