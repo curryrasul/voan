@@ -1,10 +1,6 @@
 name: mdbook -> gh pages
 
-on:
-  push:
-   # branches:
-     # - prod
-  pull_request:
+on: [push, pull_request]
 
 jobs:
   deploy:
@@ -21,6 +17,7 @@ jobs:
           use-toc: true
           use-opengh: true
       - run: cd gh-pages && mdbook build
+      - run: cp -f ./src/images/favicon.jpeg ./book/
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
