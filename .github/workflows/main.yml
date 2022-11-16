@@ -12,7 +12,6 @@ jobs:
       - uses: jontze/action-mdbook@v1
         with:
           token: ${{secrets.GITHUB_TOKEN}}
-          # Optional Plugins have to be enabled
           use-linkcheck: true
           use-toc: true
           use-opengh: true
