@@ -5,7 +5,7 @@ import './global.css'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { new_voting } from './utils'
+import { new_voting, validateAccountId } from './utils'
 
 export default function Create() {
     let currDate = moment()
@@ -34,24 +34,24 @@ export default function Create() {
                     setSignupDeadline(event.target.value);
                     if (moment(votingDeadline).isBefore(moment(event.target.value))) {
                         setVotingDeadline(moment(event.target.value).add(1, 'h').format('YYYY-MM-DDTHH:mm'))
-                        toast(`Voting deadline was automaticaly set to 1 hour after sign up`);
+                        toast(`Voting deadline was automaticaly set to 1 hour after registration!`);
                     }
                 } else {
-                    toast(`Sign-up deadline must be after now!`);
+                    toast.error(`Outdated registration deadline!`);
                 }
                 break
             case 'voting-deadline':
                 if (moment(event.target.value).isAfter(moment(signupDeadline))) {
                     setVotingDeadline(event.target.value);
                 } else {
-                    toast(`Voting deadline must be after sign-up deadline!`);
+                    toast.error(`Voting deadline must be after registration deadline!`);
                 }
                 break
             case 'threshold':
                 if (event.target.value > 0 && event.target.value <= whitelist.length) {
                     setThreshold(+event.target.value);
                 } else {
-                    toast(`Threshold must be positive number <= whitelist length!`);
+                    toast.error(`Threshold must be positive number and less than number of participants!`);
                 }
                 break
             case 'member-name':
@@ -68,6 +68,10 @@ export default function Create() {
     }
 
     let addMember = () => {
+        if (!validateAccountId(memberName)) {
+            toast.error("Incorrect AccountID")
+            return
+        }
         if (whitelist.length >= 8) {
             toast.error("Whitelist is full!");
             return
@@ -99,17 +103,17 @@ export default function Create() {
             return
         }
         if (threshold === 0 || threshold > whitelist.length) {
-            toast.error(`Threshold must be positive number <= whitelist length!`);
+            toast.error(`Threshold must be positive number and less than number of participants!`);
             setButtonLoading(false)
             return
         }
         if (moment(signupDeadline).isBefore(moment())) {
-            toast.error(`Sign-Up deadline must be in future!`);
+            toast.error(`Outdated registration deadline!`);
             setButtonLoading(false)
             return
         }
         if (moment(votingDeadline).isBefore(moment(signupDeadline))) {
-            toast.error(`Voting deadline must be after Sign-up deadline!`);
+            toast.error(`Voting deadline must be after registration deadline!`);
             setButtonLoading(false)
             return
         }
@@ -133,7 +137,7 @@ export default function Create() {
         <main className="wrapper">
             <div className="create-vote">
                 <a className="back-button" href="/">❮ Back</a>
-                <h2>Create your own vote</h2>
+                <h2>Create new voting</h2>
                 <div className="form">
                     <label data-hover="Proposal of voting">Proposal</label>
                     <textarea name="proposal" type="text" placeholder="Proposal" rows="5" value={proposal} onChange={handleChange}></textarea>

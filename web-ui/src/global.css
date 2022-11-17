@@ -412,12 +412,12 @@ input[name="member-name"] {
     width: 200px;
 }
 
-.wrong-vote {
+.wrong-page {
     font-size: 36px;
     font-weight: bold;
 }
 
-.wrong-vote a {
+.wrong-page a {
     font-weight: normal;
     font-size: 24px;
     text-decoration: underline;
