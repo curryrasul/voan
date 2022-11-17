@@ -5,7 +5,7 @@ import './global.css'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { new_voting } from './utils'
+import { new_voting, validateAccountId } from './utils'
 
 export default function Create() {
     let currDate = moment()
@@ -68,6 +68,10 @@ export default function Create() {
     }
 
     let addMember = () => {
+        if (!validateAccountId(memberName)){
+            toast.error("Incorrect AccountID")
+            return
+        }
         if (whitelist.length >= 8) {
             toast.error("Whitelist is full!");
             return

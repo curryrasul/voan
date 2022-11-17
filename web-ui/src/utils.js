@@ -176,3 +176,12 @@ export async function sendVoteToRelayer(voteID, options, answer) {
     let data = JSON.stringify(relayer_options)
     return await axios.post('//31.172.77.23:3000/', data, axiosConfig)
 }
+
+export function validateAccountId(accountID) {
+    const ACCOUNT_ID_REGEX = /^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
+    return (
+        accountID.length >= 2 &&
+        accountID.length <= 64 &&
+        ACCOUNT_ID_REGEX.test(accountID)
+    );
+}
