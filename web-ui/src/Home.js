@@ -14,7 +14,7 @@ export default function Home() {
 
     let goToVote = () => {
         if (voteID === '') {
-            toast.error('Enter voteID first')
+            toast.error('Enter voteID first!')
             return
         }
         let tmpLink = document.createElement('a')
@@ -29,8 +29,8 @@ export default function Home() {
     }
 
     const underform = window.walletConnection.isSignedIn() ?
-        <p>Or you can <a className="open-popup text-button" data-window="create-vote-dialog" href="/create">create</a> your own vote</p> :
-        <p>Or you can login your near account to create your own vote</p>
+        <p>Or you can <a className="open-popup text-button" data-window="create-vote-dialog" href="/create">create</a> your own voting.</p> :
+        <p>Or you can login to your near account and create your own voting.</p>
 
     let findButton = <button className="button" onClick={goToVote}>ENTER</button>
 
@@ -38,7 +38,7 @@ export default function Home() {
         <>
             <main className="wrapper">
                 <div className="content">
-                    <p>To view or participate in a vote, you can search for it by its ID:</p>
+                    <p>To view or participate in a voting, you can search for it by its ID:</p>
                     <div className="form">
                         <label data-hover="ID of vote that you want to find">Vote ID</label>
                         <input type="text" placeholder="Vote ID" value={voteID} onChange={changeHandler} onKeyUp={enterHandler}></input>

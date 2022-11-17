@@ -1,12 +1,12 @@
 import { connect, Contract, keyStores, WalletConnection, providers } from 'near-api-js'
-import { DOMAIN, getConfig } from './config'
+import { DOMAIN, RELAYER_ADDRESS, getConfig } from './config'
 import { buildMimcSponge } from 'circomlibjs'
 import { randomBytes } from 'crypto'
 import * as snarkjs from 'snarkjs'
 import axios from 'axios'
 /* global BigInt */
 
-const nearConfig = getConfig('testnet')
+const nearConfig = getConfig()
 
 export async function initContract() {
     const near = await connect(Object.assign({ keyStore: new keyStores.BrowserLocalStorageKeyStore() }, nearConfig))
@@ -174,7 +174,7 @@ export async function sendVoteToRelayer(voteID, options, answer) {
         }
     }
     let data = JSON.stringify(relayer_options)
-    return await axios.post('//31.172.77.23:3000/', data, axiosConfig)
+    return await axios.post(RELAYER_ADDRESS, data, axiosConfig)
 }
 
 export function validateAccountId(accountID) {
