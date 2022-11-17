@@ -44,7 +44,7 @@ export default function Done() {
                 <div className="created-vote-link">Link to your vote:<br /><a href={"/vote/" + voteID}>{voteURL}</a></div>
                 <div className="created-link-share">
                     Share:
-                    <a className="tg-link" href={tgLink}>.</a>
+                    <a className="tg-link" target="_blank" rel="noopener noreferrer" href={tgLink}>.</a>
                 </div>
             </div>
         </div>
