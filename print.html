@@ -78,7 +78,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="voan.html"><strong aria-hidden="true">1.</strong> VOAN</a></li><li class="chapter-item expanded "><a href="overview.html"><strong aria-hidden="true">2.</strong> Overview</a></li><li class="chapter-item expanded "><a href="how-it-works.html"><strong aria-hidden="true">3.</strong> How it works</a></li><li class="chapter-item expanded "><a href="how-to-use.html"><strong aria-hidden="true">4.</strong> How to use</a></li><li class="chapter-item expanded "><a href="roadmap.html"><strong aria-hidden="true">5.</strong> Roadmap</a></li><li class="chapter-item expanded "><a href="useful-links.html"><strong aria-hidden="true">6.</strong> Useful links</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="voan.html"><strong aria-hidden="true">1.</strong> VOAN</a></li><li class="chapter-item expanded "><a href="overview.html"><strong aria-hidden="true">2.</strong> Overview</a></li><li class="chapter-item expanded "><a href="motivation.html"><strong aria-hidden="true">3.</strong> Motivation</a></li><li class="chapter-item expanded "><a href="how-it-works.html"><strong aria-hidden="true">4.</strong> How it works</a></li><li class="chapter-item expanded "><a href="how-to-use.html"><strong aria-hidden="true">5.</strong> How to use</a></li><li class="chapter-item expanded "><a href="roadmap.html"><strong aria-hidden="true">6.</strong> Roadmap</a></li><li class="chapter-item expanded "><a href="useful-links.html"><strong aria-hidden="true">7.</strong> Useful links</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -148,7 +148,7 @@
         </i>
     </a>
 </p>
-<p>One of the key requirements for votings is <strong>privacy</strong>. There is no <em>privacy-by-default</em> on NEAR Protocol. The main motivation comes from experience of participating in DAOs: you cannot vote against the proposal, because you may offend someone. Anonymity would be a great option.</p>
+<p>One of the key requirements for voting is <strong>privacy</strong>. There is no <em>privacy-by-default</em> on the NEAR Protocol. The main motivation for VoAn comes from the experience of participating in DAOs: you cannot vote against the proposal, because you may offend someone. Anonymity would be a great option.</p>
 <p align="center"><i><b>Privacy is normal!</b></i></p>
 <hr />
 <p>On this web-site you can find info on:</p>
@@ -157,32 +157,36 @@
 <li><a href="./how-to-use.html">How to use <strong>voan</strong></a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="overview"><a class="header" href="#overview">Overview</a></h1>
-<p>VoAn is a platform for creating anonymous votings. The project was created for <a href="https://metabuild.devpost.com/">Metabuild III Hackathon</a>. Currently supports 8 participants maximum.</p>
-<p>To learn how to use it check <a href="./how-to-use.html">how to use</a> section. To learn how it works check <a href="./how-it-works.html">how it works</a> section.</p>
+<p>VoAn is a platform that enables anonymous voting. The project was created for the <a href="https://metabuild.devpost.com/">Metabuild III Hackathon</a>. Currently supports maximum of 8 participants.</p>
+<p>To learn how to use it check the <a href="./how-to-use.html">how to use</a> section. To learn how it works check the <a href="./how-it-works.html">how it works</a> section.</p>
 <p><em>Smart-contract is running on <a href="https://explorer.testnet.near.org/accounts/v1.voan.testnet">v1.voan.testnet</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="motivation"><a class="header" href="#motivation">Motivation</a></h1>
+<p>The complete transparency and distributed nature of the blockchain makes it hard to operate in a private manner. Transactions between wallets, smart contract calls and their results are considered public data and are readily available to anyone. Where some use cases substantially benefit from the transparency of the blockchain, there are a wide range of applications where privatization is instrumental for their progress.</p>
+<p>One such application is voting. With blockchain igniting the paradigm shift to user ownership and control, many aspects of applications, organizations and the protocols themselves rely on voting for an endless variety of aspects. From voting on protocol changes, community votes on roadmap changes, to DAO voting on investment decisions, trust-less voting mechanisms have been prime use cases for the blockchain.</p>
+<p>However, voting is an application that suffers from over transparency. Knowing that your vote is public information may potentially impact what you vote for, furthermore, whether you voted or not may also impact your standings within a community or organization; this can be especially imagined within a small DAO setting. What is needed is a solution which provides trust-less voting for any purpose while retaining the privacy of the voters.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="how-it-works"><a class="header" href="#how-it-works">How it works</a></h1>
 <h2 id="abstract"><a class="header" href="#abstract">Abstract</a></h2>
-<p>As everything on blockchains is visible to others (f.e. you cannot send tokens to your friends privately) it is impossible to build apps with privacy on modern blockchains (NEAR Protocol, Ethereum) without the help of other primitives. The thing that helps us to build such apps is <em>zk-cryptography</em>: it allows us to prove that we know some information, without revealing this information, for example: for some publicly-known number \(c\), I can prove that I know factors \(a\) and \(b\) (without revealing them), such that \(a * b = c\). Thus, we can prove that we belong to a certain set without revealing who we are (that is also called proof of set membership) ... and that actually the key mechanism of voting. Let's divide the vote into several stages:</p>
+<p>As everything on the blockchains is visible to others (f.e. you cannot send tokens to your friends privately) it is impossible to build privacy preserving apps on modern blockchains (NEAR Protocol, Ethereum) without the help of other primitives. The main component which enables us to build such apps is <em>zk-cryptography</em>: at its core, it allows us to prove that we know some information, without revealing that information. For example: for some publicly-known number \(c\), I can prove that I know factors \(a\) and \(b\) (without revealing them), such that \(a * b = c\). This notion can be taken further to essentially prove that a party belong to a certain set without revealing which party they are (this is what is known as a proof of set membership). Zero knowledge group membership is actually the key mechanism behind anonymous voting. Let's divide the process into several stages:</p>
 <ol>
 <li>Voting creation/initialization</li>
 <li>Voting itself</li>
 </ol>
-<p>In the first step, host of a voting sets the rules: proposal, deadlines, jury list/whitelist, etc. The main thing here is the whitelist. This whitelist contains public keys of participants of a voting. </p>
-<p>In the second step participants can vote, and they can do that by proving the knowledge of a private key that matches their public key and that this exact public key is in the whitelist. 
-By that participant didn't reveal himself and really was able to prove that he has the right to vote (if a person were not on the whitelist, he would not be able to create such evidence).</p>
-<p>There are few problems here and some you might noticed yourself:</p>
+<p>In the first step, the host of a voting sets the rules for the vote: which proposal, deadlines, jury list/whitelist, etc. The main thing here is the whitelist. This whitelist contains the public keys of participants authorized to take part in the vote. </p>
+<p>In the second step, participants can vote. They do so by proving their knowledge of a private key that matches their public key and that this exact public key is in the whitelist. 
+By that, participants don't reveal themselves directly but are still able to prove that they have the right to vote (if a person was not on the whitelist, he would not be able to create such evidence).</p>
+<p>There are few problems with this naive scheme, some of which you might have noticed yourself:</p>
 <ol>
-<li>Participant can vote more than once</li>
-<li>Participant will reveal himself if he calls the transaction from his publicly known address/account</li>
+<li>Participants can vote more than once</li>
+<li>Participants will reveal themselves if they call the transaction from their publicly known address/account</li>
 </ol>
-<p>Let's discuss second problem first. As already said, if a participant calls vote-transaction from his address, he reveals himself. One of the solutions that can come to mind to create new account and vote from it. But in blockchains you have to pay a GAS fee. So, you need to top up the balance of a new account, but if you do that it will be easy to establish a connection between a publicly known account and a new one. Seems impossible now ... But, actually we can delegate the transaction call to a separate person - <em>relayer</em>, so he'll pay for our transaction and we don't even need blockchain interaction (relayer will do it for us). There are few problems with that too, but they are solvable:</p>
+<p>Let's discuss the second problem first. As already mentioned, due to the transparency of the blockchain, if a participant calls a vote-transaction from his address, he will reveal his identity. One of the solutions can come to mind is to create a new account and vote from it. But in blockchains, you have to pay a GAS fee for execute contract calls. So, you would need to top up the balance of a new account, but if you do so, it will be easy to establish a connection between a publicly known account and this new one. Seems impossible now ... But, actually we can delegate the transaction call to a separate person - <em>relayer</em>, who will pay for our transaction. By doing so, we don't even need to interact with the blockchain (the relayer will do it for us). There are few problems with that too, but they are solvable:</p>
 <ul>
-<li>Relayer can frontrun (change our vote value) - this can be solved if the proof depends on the vote value (so if he changes it, the proof'll be invalid)</li>
+<li>Relayer can frontrun (change our vote value) - this can be solved if the proof depends on the vote value (so if he changes it, the proof will become invalid and be rejected by the smart contract)</li>
 <li>Relayer can censor votes - this can be solved if there are many relayers</li>
-<li>Relayer need money/other motivation to work - this can be solved with tokenomics or if host pays for that</li>
+<li>Relayer need money/other motivation to work - this can be solved with an incentive mechanism or if host pays fees to relayers</li>
 </ul>
-<p>Before we move to the first problem (vote more than once) it's important to say that the use of real blockchain accounts (namely, the creation of proofs of ownership of a private key) is not ZK-Friendly operation (you as a client will create such a proof for a very long time), that's why we need to think about other way to do that ... and we can do that by adding additional stage - <strong>registration</strong>. Here we'll randomly generate secret number and send the <em>commitment</em> (hash of secret number) to the smart-contract, so the <em>commitment</em> will mimic the public key; and of course - we can make proving the knowledge of the preimage of the hash-function ZK-Friendly.</p>
-<p>Now, let's discuss how to solve the first problem ... the solution is really simple: at the registration stage, instead of generating one number (\(secret\)), you can generate another one (let's call it \(nullifier)\) ​​and \(commitment = Hash(secret, nullifier)\). Then, at the voting stage, when we make a ZK proof, we will reveal the \(nullifier\). This way we won't declassify ourselves, but we won't be able to vote twice with the same nullifier either.</p>
+<p>Before we move to the first problem (double voting), it's important to say that the use of real blockchain accounts (namely, the creation of proofs of ownership of a private key) is not a ZK-Friendly operation (you as a client will create such a proof for a very long time), that's why we need to think about other ways to do it ... one solution is by adding an additional stage - <strong>registration</strong>. Here we will randomly generate a secret number and send the <em>commitment</em> (hash of the secret number) to the smart-contract such that the <em>commitment</em> will mimic the role of the public key; and of course - we can make proving the knowledge of the preimage of the hash-function ZK-Friendly.</p>
+<p>Now, let's discuss how to solve the first problem ... the solution is really simple: at the registration stage, instead of generating one number (\(secret\)), you can generate another one (let's call it \(nullifier)\) ​​and \(commitment = Hash(secret, nullifier)\). Then, at the voting stage, when we make a ZK proof, we will reveal the \(nullifier\). This way we never reveal the secrets to generate a full proof, but since each proof we produce will be using the same nullifier, if the smart contract keeps track of used nullifiers, we won't be able to vote twice.</p>
 <h3 id="voting-creationinitialization"><a class="header" href="#voting-creationinitialization">Voting creation/initialization</a></h3>
 <p align="center">
     <img src="./images/creating.png" width="650">
@@ -198,7 +202,7 @@ By that participant didn't reveal himself and really was able to prove that he h
 <p align="center">
     <i>Registration scheme</i>
 </p>
-<p>People from whitelist can sign up for voting by submitting a commitment = \(Hash(secret, nullifier)\).</p>
+<p>Users from the whitelist can sign up for voting by submitting a commitment = \(Hash(secret, nullifier)\).</p>
 <h3 id="voting"><a class="header" href="#voting">Voting</a></h3>
 <p align="center">
     <img src="./images/voting.png" width="650">
@@ -207,7 +211,7 @@ By that participant didn't reveal himself and really was able to prove that he h
     <i>Voting scheme</i>
 </p>
 <p>Participants choose a vote option (yes or no) 
-and vote through the relayer, by creating a ZK proof (by passing their secret) that they are one of the registered members and sending it to him.</p>
+and vote through the relayer, by creating a ZK proof <em>locally</em> (by using their secret) that they are one of the registered members and then sending the proof him.</p>
 <h2 id="tech-stack"><a class="header" href="#tech-stack">Tech stack</a></h2>
 <p>Programming languages: </p>
 <ul>
