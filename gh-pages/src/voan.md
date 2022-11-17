@@ -3,7 +3,7 @@
     <img src="./images/voan-logo.jpeg" width="150">
 </p> -->
 <p align="center">
-    <a href="">
+    <a href="http://31.172.77.23:3080/">
         <i>
             TRY THE APP HERE
         </i>
