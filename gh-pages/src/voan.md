@@ -10,7 +10,7 @@
     </a>
 </p>
 
-One of the key requirements for votings is **privacy**. There is no *privacy-by-default* on NEAR Protocol. The main motivation comes from experience of participating in DAOs: you cannot vote against the proposal, because you may offend someone. Anonymity would be a great option.
+One of the key requirements for voting is **privacy**. There is no *privacy-by-default* on the NEAR Protocol. The main motivation for VoAn comes from the experience of participating in DAOs: you cannot vote against the proposal, because you may offend someone. Anonymity would be a great option.
 
 <p align="center"><i><b>Privacy is normal!</b></i></p>
 
