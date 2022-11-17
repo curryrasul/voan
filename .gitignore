@@ -19,7 +19,7 @@ web-ui/.pnp.js
 web-ui/coverage
 
 # front-end production
-web-ui/build
+# web-ui/build
 
 # front-end misc
 web-ui/.DS_Store

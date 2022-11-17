@@ -217,6 +217,6 @@ function WaitingMember(props) {
 
 function WrongVote() {
     return (
-        <div className="wrong-vote">THIS VOTE NOT FOUND :(<br /><a href="/">GO BACK</a></div>
+        <div className="wrong-page">THIS VOTE NOT FOUND :(<br /><a href="/">GO BACK</a></div>
     )
 }

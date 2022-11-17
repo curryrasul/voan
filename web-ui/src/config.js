@@ -1,9 +1,11 @@
-const CONTRACT = 'dev-1667755352527-99327939881892'
+const CONTRACT = 'v1.voan.testnet'
+const NEAR_NETWORK = 'testnet'
+
+export const RELAYER_ADDRESS = '//31.172.77.23:3000/'
 export const DOMAIN = window.location.origin
 
-export function getConfig(env) {
-    switch (env) {
-        case 'production':
+export function getConfig() {
+    switch (NEAR_NETWORK) {
         case 'mainnet':
             return {
                 networkId: 'mainnet',
@@ -13,7 +15,6 @@ export function getConfig(env) {
                 helperUrl: 'https://helper.mainnet.near.org',
                 explorerUrl: 'https://explorer.mainnet.near.org',
             }
-        case 'development':
         case 'testnet':
             return {
                 networkId: 'testnet',
@@ -40,7 +41,6 @@ export function getConfig(env) {
                 walletUrl: 'http://localhost:4000/wallet',
                 contractName: CONTRACT,
             }
-        case 'test':
         case 'ci':
             return {
                 networkId: 'shared-test',
@@ -56,6 +56,6 @@ export function getConfig(env) {
                 masterAccount: 'test.near',
             }
         default:
-            throw Error(`Unconfigured environment '${env}'. Can be configured in src/config.js.`)
+            throw Error(`Unknown network '${NEAR_NETWORK}'. Can be configured in src/config.js.`)
     }
 }
