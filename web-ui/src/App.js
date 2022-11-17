@@ -22,6 +22,7 @@ export default function App() {
                 <Route path="/create" element={<Create />} />
                 <Route path="/done" element={<Done />} />
                 <Route path="/vote/:id" element={<Vote />} />
+                <Route path="*" element={<PageNotFound />} />
             </Routes>
             <Footer />
         </BrowserRouter>
@@ -71,5 +72,15 @@ function Footer() {
                 </div>
             </div>
         </footer>
+    )
+}
+
+function PageNotFound() {
+    return (
+        <main className="wrapper">
+            <div className="content">
+                <div className="wrong-page">PAGE NOT FOUND :(<br /><a href="/">GO BACK</a></div>
+            </div>
+        </main>
     )
 }
