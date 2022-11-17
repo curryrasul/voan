@@ -1,0 +1,7 @@
+# Motivation
+
+The complete transparency and distributed nature of the blockchain makes it hard to operate in a private manner. Transactions between wallets, smart contract calls and their results are considered public data and are readily available to anyone. Where some use cases substantially benefit from the transparency of the blockchain, there are a wide range of applications where privatization is instrumental for their progress.
+
+One such application is voting. With blockchain igniting the paradigm shift to user ownership and control, many aspects of applications, organizations and the protocols themselves rely on voting for an endless variety of aspects. From voting on protocol changes, community votes on roadmap changes, to DAO voting on investment decisions, trust-less voting mechanisms have been prime use cases for the blockchain.
+
+However, voting is an application that suffers from over transparency. Knowing that your vote is public information may potentially impact what you vote for, furthermore, whether you voted or not may also impact your standings within a community or organization; this can be especially imagined within a small DAO setting. What is needed is a solution which provides trust-less voting for any purpose while retaining the privacy of the voters.

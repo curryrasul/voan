@@ -1,30 +1,30 @@
 # How it works
 
 ## Abstract
-As everything on blockchains is visible to others (f.e. you cannot send tokens to your friends privately) it is impossible to build apps with privacy on modern blockchains (NEAR Protocol, Ethereum) without the help of other primitives. The thing that helps us to build such apps is *zk-cryptography*: it allows us to prove that we know some information, without revealing this information, for example: for some publicly-known number \\(c\\), I can prove that I know factors \\(a\\) and \\(b\\) (without revealing them), such that \\(a * b = c\\). Thus, we can prove that we belong to a certain set without revealing who we are (that is also called proof of set membership) ... and that actually the key mechanism of voting. Let's divide the vote into several stages:
+As everything on the blockchains is visible to others (f.e. you cannot send tokens to your friends privately) it is impossible to build privacy preserving apps on modern blockchains (NEAR Protocol, Ethereum) without the help of other primitives. The main component which enables us to build such apps is *zk-cryptography*: at its core, it allows us to prove that we know some information, without revealing that information. For example: for some publicly-known number \\(c\\), I can prove that I know factors \\(a\\) and \\(b\\) (without revealing them), such that \\(a * b = c\\). This notion can be taken further to essentially prove that a party belong to a certain set without revealing which party they are (this is what is known as a proof of set membership). Zero knowledge group membership is actually the key mechanism behind anonymous voting. Let's divide the process into several stages:
 
 1. Voting creation/initialization
 2. Voting itself
 
-In the first step, host of a voting sets the rules: proposal, deadlines, jury list/whitelist, etc. The main thing here is the whitelist. This whitelist contains public keys of participants of a voting. 
+In the first step, the host of a voting sets the rules for the vote: which proposal, deadlines, jury list/whitelist, etc. The main thing here is the whitelist. This whitelist contains the public keys of participants authorized to take part in the vote. 
 
-In the second step participants can vote, and they can do that by proving the knowledge of a private key that matches their public key and that this exact public key is in the whitelist. 
-By that participant didn't reveal himself and really was able to prove that he has the right to vote (if a person were not on the whitelist, he would not be able to create such evidence).
+In the second step, participants can vote. They do so by proving their knowledge of a private key that matches their public key and that this exact public key is in the whitelist. 
+By that, participants don't reveal themselves directly but are still able to prove that they have the right to vote (if a person was not on the whitelist, he would not be able to create such evidence).
 
-There are few problems here and some you might noticed yourself:
+There are few problems with this naive scheme, some of which you might have noticed yourself:
 
-1. Participant can vote more than once
-2. Participant will reveal himself if he calls the transaction from his publicly known address/account
+1. Participants can vote more than once
+2. Participants will reveal themselves if they call the transaction from their publicly known address/account
 
-Let's discuss second problem first. As already said, if a participant calls vote-transaction from his address, he reveals himself. One of the solutions that can come to mind to create new account and vote from it. But in blockchains you have to pay a GAS fee. So, you need to top up the balance of a new account, but if you do that it will be easy to establish a connection between a publicly known account and a new one. Seems impossible now ... But, actually we can delegate the transaction call to a separate person - *relayer*, so he'll pay for our transaction and we don't even need blockchain interaction (relayer will do it for us). There are few problems with that too, but they are solvable:
+Let's discuss the second problem first. As already mentioned, due to the transparency of the blockchain, if a participant calls a vote-transaction from his address, he will reveal his identity. One of the solutions can come to mind is to create a new account and vote from it. But in blockchains, you have to pay a GAS fee for execute contract calls. So, you would need to top up the balance of a new account, but if you do so, it will be easy to establish a connection between a publicly known account and this new one. Seems impossible now ... But, actually we can delegate the transaction call to a separate person - *relayer*, who will pay for our transaction. By doing so, we don't even need to interact with the blockchain (the relayer will do it for us). There are few problems with that too, but they are solvable:
 
-* Relayer can frontrun (change our vote value) - this can be solved if the proof depends on the vote value (so if he changes it, the proof'll be invalid)
+* Relayer can frontrun (change our vote value) - this can be solved if the proof depends on the vote value (so if he changes it, the proof will become invalid and be rejected by the smart contract)
 * Relayer can censor votes - this can be solved if there are many relayers
-* Relayer need money/other motivation to work - this can be solved with tokenomics or if host pays for that
+* Relayer need money/other motivation to work - this can be solved with an incentive mechanism or if host pays fees to relayers
 
-Before we move to the first problem (vote more than once) it's important to say that the use of real blockchain accounts (namely, the creation of proofs of ownership of a private key) is not ZK-Friendly operation (you as a client will create such a proof for a very long time), that's why we need to think about other way to do that ... and we can do that by adding additional stage - **registration**. Here we'll randomly generate secret number and send the *commitment* (hash of secret number) to the smart-contract, so the *commitment* will mimic the public key; and of course - we can make proving the knowledge of the preimage of the hash-function ZK-Friendly.
+Before we move to the first problem (double voting), it's important to say that the use of real blockchain accounts (namely, the creation of proofs of ownership of a private key) is not a ZK-Friendly operation (you as a client will create such a proof for a very long time), that's why we need to think about other ways to do it ... one solution is by adding an additional stage - **registration**. Here we will randomly generate a secret number and send the *commitment* (hash of the secret number) to the smart-contract such that the *commitment* will mimic the role of the public key; and of course - we can make proving the knowledge of the preimage of the hash-function ZK-Friendly.
 
-Now, let's discuss how to solve the first problem ... the solution is really simple: at the registration stage, instead of generating one number (\\(secret\\)), you can generate another one (let's call it \\(nullifier)\\) ​​and \\(commitment = Hash(secret, nullifier)\\). Then, at the voting stage, when we make a ZK proof, we will reveal the \\(nullifier\\). This way we won't declassify ourselves, but we won't be able to vote twice with the same nullifier either.
+Now, let's discuss how to solve the first problem ... the solution is really simple: at the registration stage, instead of generating one number (\\(secret\\)), you can generate another one (let's call it \\(nullifier)\\) ​​and \\(commitment = Hash(secret, nullifier)\\). Then, at the voting stage, when we make a ZK proof, we will reveal the \\(nullifier\\). This way we never reveal the secrets to generate a full proof, but since each proof we produce will be using the same nullifier, if the smart contract keeps track of used nullifiers, we won't be able to vote twice.
 
 ### Voting creation/initialization
 
@@ -46,7 +46,7 @@ Done by host as described earlier.
     <i>Registration scheme</i>
 </p>
 
-People from whitelist can sign up for voting by submitting a commitment = \\(Hash(secret, nullifier)\\).
+Users from the whitelist can sign up for voting by submitting a commitment = \\(Hash(secret, nullifier)\\).
 
 ### Voting
 
@@ -58,7 +58,7 @@ People from whitelist can sign up for voting by submitting a commitment = \\(Has
 </p>
 
 Participants choose a vote option (yes or no) 
-and vote through the relayer, by creating a ZK proof (by passing their secret) that they are one of the registered members and sending it to him.
+and vote through the relayer, by creating a ZK proof *locally* (by using their secret) that they are one of the registered members and then sending the proof him.
 
 ## Tech stack
 Programming languages: 
