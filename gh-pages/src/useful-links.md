@@ -1,4 +1,4 @@
 # Useful links
 
-* [VoAn App](http://31.172.77.23:3080/)
+* [VoAn App](http://voan.site)
 * [GitHub Repo](https://github.com/curryrasul/voan)
