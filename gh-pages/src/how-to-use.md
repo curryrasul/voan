@@ -1,9 +1,8 @@
 # How to use
 
-A demonstration of using VOAN is presented in the following video:
-
 <p align="center">
-    <video src="./videos/demo.MP4" width="650"></video>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/MgdGgoEVGuM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+    </iframe>
 </p>
 <p align="center">
     <i>Demo video: VOAN</i>
