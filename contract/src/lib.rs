@@ -148,6 +148,11 @@ impl Contract {
         self.votings.insert(&id, &voting);
     }
 
+    #[private]
+    pub fn delete_voting(&mut self, id: ID) {
+        self.votings.remove(&id);
+    }
+
     // ---------------- VIEW FUNCTIONS ----------------
 
     /// View function that returns Merkle Tree
