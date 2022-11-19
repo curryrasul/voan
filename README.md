@@ -17,7 +17,7 @@ One of the key requirements for voting is **privacy**. There is no *privacy-by-d
 <h2 align="center">How it works</h2>
 
 ### Abstract
-As everything on the blockchains is visible to others (f.e. you cannot send tokens to your friends privately) it is impossible to build privacy preserving apps on modern blockchains (NEAR Protocol, Ethereum) without the help of other primitives. The main component which enables us to build such apps is *zk-cryptography*: at its core, it allows us to prove that we know some information, without revealing that information. For example: for some publicly-known number \\(c\\), I can prove that I know factors \\(a\\) and \\(b\\) (without revealing them), such that \\(a * b = c\\). This notion can be taken further to essentially prove that a party belong to a certain set without revealing which party they are (this is what is known as a proof of set membership). Zero knowledge group membership is actually the key mechanism behind anonymous voting. Let's divide the process into several stages:
+As everything on the blockchains is visible to others (f.e. you cannot send tokens to your friends privately) it is impossible to build privacy preserving apps on modern blockchains (NEAR Protocol, Ethereum) without the help of other primitives. The main component which enables us to build such apps is *zk-cryptography*: at its core, it allows us to prove that we know some information, without revealing that information. For example: for some publicly-known number `c`, I can prove that I know factors `a` and `b` (without revealing them), such that `a * b = c`. This notion can be taken further to essentially prove that a party belong to a certain set without revealing which party they are (this is what is known as a proof of set membership). Zero knowledge group membership is actually the key mechanism behind anonymous voting. Let's divide the process into several stages:
 
 1. Voting creation/initialization
 2. Voting itself
@@ -40,7 +40,7 @@ Let's discuss the second problem first. As already mentioned, due to the transpa
 
 Before we move to the first problem (double voting), it's important to say that the use of real blockchain accounts (namely, the creation of proofs of ownership of a private key) is not a ZK-Friendly operation (you as a client will create such a proof for a very long time), that's why we need to think about other ways to do it ... one solution is by adding an additional stage - **registration**. Here we will randomly generate a secret number and send the *commitment* (hash of the secret number) to the smart-contract such that the *commitment* will mimic the role of the public key; and of course - we can make proving the knowledge of the preimage of the hash-function ZK-Friendly.
 
-Now, let's discuss how to solve the first problem ... the solution is really simple: at the registration stage, instead of generating one number (\\(secret\\)), you can generate another one (let's call it \\(nullifier)\\) ​​and \\(commitment = Hash(secret, nullifier)\\). Then, at the voting stage, when we make a ZK proof, we will reveal the \\(nullifier\\). This way we never reveal the secrets to generate a full proof, but since each proof we produce will be using the same nullifier, if the smart contract keeps track of used nullifiers, we won't be able to vote twice.
+Now, let's discuss how to solve the first problem ... the solution is really simple: at the registration stage, instead of generating one number (`secret`), you can generate another one (let's call it `nullifier`) ​​and `commitment = Hash(secret, nullifier)`. Then, at the voting stage, when we make a ZK proof, we will reveal the `nullifier`. This way we never reveal the secrets to generate a full proof, but since each proof we produce will be using the same nullifier, if the smart contract keeps track of used nullifiers, we won't be able to vote twice.
 
 **So, let's go over the whole process again**:
 
@@ -64,7 +64,7 @@ Done by host as described earlier.
     <i>Registration scheme</i>
 </p>
 
-Users from the whitelist can sign up for voting by submitting a commitment = \\(Hash(secret, nullifier)\\).
+Users from the whitelist can sign up for voting by submitting a commitment = `Hash(secret, nullifier)`.
 
 **Voting**:
 
