@@ -24,7 +24,7 @@ Let's discuss the second problem first. As already mentioned, due to the transpa
 
 Before we move to the first problem (double voting), it's important to say that the use of real blockchain accounts (namely, the creation of proofs of ownership of a private key) is not a ZK-Friendly operation (you as a client will create such a proof for a very long time), that's why we need to think about other ways to do it ... one solution is by adding an additional stage - **registration**. Here we will randomly generate a secret number and send the *commitment* (hash of the secret number) to the smart-contract such that the *commitment* will mimic the role of the public key; and of course - we can make proving the knowledge of the preimage of the hash-function ZK-Friendly.
 
-Now, let's discuss how to solve the first problem ... the solution is really simple: at the registration stage, instead of generating one number (\\(secret\\)), you can generate another one (let's call it \\(nullifier)\\) ​​and \\(commitment = Hash(secret, nullifier)\\). Then, at the voting stage, when we make a ZK proof, we will reveal the \\(nullifier\\). This way we never reveal the secrets to generate a full proof, but since each proof we produce will be using the same nullifier, if the smart contract keeps track of used nullifiers, we won't be able to vote twice.
+Now, let's discuss how to solve the first problem ... the solution is really simple: at the registration stage, instead of generating one number (\\(secret\\)), you can generate another one (let's call it \\(nullifier\\)) ​​and \\(commitment = Hash(secret, nullifier)\\). Then, at the voting stage, when we make a ZK proof, we will reveal the \\(nullifier\\). This way we never reveal the secrets to generate a full proof, but since each proof we produce will be using the same nullifier, if the smart contract keeps track of used nullifiers, we won't be able to vote twice.
 
 ### Voting creation/initialization
 
@@ -62,11 +62,11 @@ and vote through the relayer, by creating a ZK proof *locally* (by using their s
 
 ## Tech stack
 Programming languages: 
-* Rust - [Smart-contract](./contract/), [tests](./tests/)
-* Circom - [zkSNARK circuits](./circuits/)
-* NodeJS - [Relayer](./relayer/)
-* JS | React | SnarkJS - [WebUI](./web-ui/) + ZK proofs generation
+* Rust - [Smart-contract](https://github.com/curryrasul/voan/tree/main/contract), [tests](https://github.com/curryrasul/voan/tree/main/tests/workspace-test)
+* Circom - [zkSNARK circuits](https://github.com/curryrasul/voan/tree/main/circuits)
+* NodeJS - [Relayer](https://github.com/curryrasul/voan/tree/main/relayer)
+* JS | React | SnarkJS - [WebUI](https://github.com/curryrasul/voan/tree/main/web-ui) + ZK proofs generation
 
 Primitives:
 * Groth16 proving scheme - used for a zkp-side (arkworks-rs/groth16 + electron-labs/verifier & SnarkJS + Circom)
-* [Merkle Tree](./contract/src/merkle_tree.rs) + [MiMCSponge](https://github.com/tzilkha/mimc-sponge-rs) (fully implemented by our team)
+* [Merkle Tree](https://github.com/curryrasul/voan/blob/main/contract/src/merkle_tree.rs) + [MiMCSponge](https://github.com/tzilkha/mimc-sponge-rs) (fully implemented by our team)
