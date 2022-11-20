@@ -186,7 +186,7 @@ By that, participants don't reveal themselves directly but are still able to pro
 <li>Relayer need money/other motivation to work - this can be solved with an incentive mechanism or if host pays fees to relayers</li>
 </ul>
 <p>Before we move to the first problem (double voting), it's important to say that the use of real blockchain accounts (namely, the creation of proofs of ownership of a private key) is not a ZK-Friendly operation (you as a client will create such a proof for a very long time), that's why we need to think about other ways to do it ... one solution is by adding an additional stage - <strong>registration</strong>. Here we will randomly generate a secret number and send the <em>commitment</em> (hash of the secret number) to the smart-contract such that the <em>commitment</em> will mimic the role of the public key; and of course - we can make proving the knowledge of the preimage of the hash-function ZK-Friendly.</p>
-<p>Now, let's discuss how to solve the first problem ... the solution is really simple: at the registration stage, instead of generating one number (\(secret\)), you can generate another one (let's call it \(nullifier)\) ​​and \(commitment = Hash(secret, nullifier)\). Then, at the voting stage, when we make a ZK proof, we will reveal the \(nullifier\). This way we never reveal the secrets to generate a full proof, but since each proof we produce will be using the same nullifier, if the smart contract keeps track of used nullifiers, we won't be able to vote twice.</p>
+<p>Now, let's discuss how to solve the first problem ... the solution is really simple: at the registration stage, instead of generating one number (\(secret\)), you can generate another one (let's call it \(nullifier\)) ​​and \(commitment = Hash(secret, nullifier)\). Then, at the voting stage, when we make a ZK proof, we will reveal the \(nullifier\). This way we never reveal the secrets to generate a full proof, but since each proof we produce will be using the same nullifier, if the smart contract keeps track of used nullifiers, we won't be able to vote twice.</p>
 <h3 id="voting-creationinitialization"><a class="header" href="#voting-creationinitialization">Voting creation/initialization</a></h3>
 <p align="center">
     <img src="./images/creating.png" width="650">
@@ -215,15 +215,15 @@ and vote through the relayer, by creating a ZK proof <em>locally</em> (by using 
 <h2 id="tech-stack"><a class="header" href="#tech-stack">Tech stack</a></h2>
 <p>Programming languages: </p>
 <ul>
-<li>Rust - <a href="./contract/">Smart-contract</a>, <a href="./tests/">tests</a></li>
-<li>Circom - <a href="./circuits/">zkSNARK circuits</a></li>
-<li>NodeJS - <a href="./relayer/">Relayer</a></li>
-<li>JS | React | SnarkJS - <a href="./web-ui/">WebUI</a> + ZK proofs generation</li>
+<li>Rust - <a href="https://github.com/curryrasul/voan/tree/main/contract">Smart-contract</a>, <a href="https://github.com/curryrasul/voan/tree/main/tests/workspace-test">tests</a></li>
+<li>Circom - <a href="https://github.com/curryrasul/voan/tree/main/circuits">zkSNARK circuits</a></li>
+<li>NodeJS - <a href="https://github.com/curryrasul/voan/tree/main/relayer">Relayer</a></li>
+<li>JS | React | SnarkJS - <a href="https://github.com/curryrasul/voan/tree/main/web-ui">WebUI</a> + ZK proofs generation</li>
 </ul>
 <p>Primitives:</p>
 <ul>
 <li>Groth16 proving scheme - used for a zkp-side (arkworks-rs/groth16 + electron-labs/verifier &amp; SnarkJS + Circom)</li>
-<li><a href="./contract/src/merkle_tree.rs">Merkle Tree</a> + <a href="https://github.com/tzilkha/mimc-sponge-rs">MiMCSponge</a> (fully implemented by our team)</li>
+<li><a href="https://github.com/curryrasul/voan/blob/main/contract/src/merkle_tree.rs">Merkle Tree</a> + <a href="https://github.com/tzilkha/mimc-sponge-rs">MiMCSponge</a> (fully implemented by our team)</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="how-to-use"><a class="header" href="#how-to-use">How to use</a></h1>
 <p align="center">
